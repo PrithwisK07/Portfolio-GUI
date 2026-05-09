@@ -22,7 +22,7 @@ export default function Footer() {
   };
 
   return (
-    <section className="h-screen py-32 px-6 md:px-12 flex flex-col justify-center items-center text-center relative border-t border-white/10 overflow-hidden">
+    <section id="contact" className="h-screen py-32 px-6 md:px-12 flex flex-col justify-center items-center text-center relative border-t border-white/10 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full font-display text-[20vw] font-black text-white/2 whitespace-nowrap pointer-events-none tracking-tighter">
         HELLO
       </div>
