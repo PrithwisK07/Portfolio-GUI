@@ -30,12 +30,22 @@ export default function Services() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. The Scroll Entry Animation
-      gsap.fromTo(cardsRef.current,
+      // Create a timeline to cleanly handle delays and toggle actions
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 80%",   // Plays when the top of the section enters 80% of the screen
+          end: "bottom top",  // Reverses when the bottom of the section hits the top of the screen
+          toggleActions: "play reverse play reverse", 
+        }
+      });
+
+      // The "+=0.3" parameter at the end adds the requested delay before the entrance begins
+      tl.fromTo(cardsRef.current,
         { 
           y: 200, 
           opacity: 0, 
-          rotationY: 15, // Starts slightly turned away
+          rotationY: 15, 
           rotationX: 10,
           scale: 0.9
         },
@@ -47,38 +57,31 @@ export default function Services() {
           scale: 1,
           duration: 1.2,
           stagger: 0.15,
-          ease: "back.out(1.2)", // Gives it that springy, premium feel
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 70%",
-          }
-        }
+          ease: "back.out(1.2)"
+        },
+        "+=0.4" // <-- The entry delay
       );
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
-  // 2. The 3D Hover & Flashlight Effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     const card = cardsRef.current[index];
     if (!card) return;
 
     const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left; // x position within the element.
-    const y = e.clientY - rect.top;  // y position within the element.
+    const x = e.clientX - rect.left; 
+    const y = e.clientY - rect.top;  
 
-    // Calculate rotation limits (-10 to 10 degrees)
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     const rotateX = ((y - centerY) / centerY) * -10;
     const rotateY = ((x - centerX) / centerX) * 10;
 
-    // Apply the Flashlight gradient position via CSS variables
     card.style.setProperty('--mouse-x', `${x}px`);
     card.style.setProperty('--mouse-y', `${y}px`);
 
-    // Apply 3D tilt using GSAP for smoothness
     gsap.to(card, {
       rotateX,
       rotateY,
@@ -88,7 +91,6 @@ export default function Services() {
       transformOrigin: "center center"
     });
     
-    // Parallax the inner text slightly in the opposite direction
     const innerContent = card.querySelector('.inner-content');
     if (innerContent) {
       gsap.to(innerContent, {
@@ -104,7 +106,6 @@ export default function Services() {
     const card = cardsRef.current[index];
     if (!card) return;
 
-    // Reset card tilt
     gsap.to(card, {
       rotateX: 0,
       rotateY: 0,
@@ -112,7 +113,6 @@ export default function Services() {
       ease: 'elastic.out(1, 0.3)'
     });
 
-    // Reset inner content parallax
     const innerContent = card.querySelector('.inner-content');
     if (innerContent) {
       gsap.to(innerContent, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
@@ -137,11 +137,9 @@ export default function Services() {
             onMouseMove={(e) => handleMouseMove(e, idx)}
             onMouseLeave={() => { handleMouseLeave(idx); handleHoverRemove(); }}
             onMouseEnter={handleHoverAdd}
-            // The flashlight effect is built into this Tailwind class logic
-            className="group relative h-[450px] p-10 rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden cursor-pointer"
+            className="group relative h-112.5 p-10 rounded-2xl bg-white/2 border border-white/10 overflow-hidden cursor-pointer"
             style={{ transformStyle: 'preserve-3d' }}
           >
-            {/* The Flashlight Gradient */}
             <div 
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
               style={{
@@ -149,14 +147,12 @@ export default function Services() {
               }}
             />
 
-            {/* Inner Content (Subject to Parallax) */}
             <div className="inner-content h-full flex flex-col justify-between relative z-10 pointer-events-none">
               <div className="flex justify-between items-start">
                 <span className="font-display text-5xl font-bold text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.2)] group-hover:text-white transition-colors duration-500">
                   {service.id}
                 </span>
                 
-                {/* Micro-interaction: Animated Plus Icon */}
                 <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:border-transparent transition-colors duration-500">
                   <span className="text-white group-hover:text-dark text-xl font-light transform group-hover:rotate-90 transition-transform duration-500">+</span>
                 </div>
