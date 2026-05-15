@@ -16,7 +16,7 @@ export default function MeteorShower() {
     canvas.height = height;
 
     // Adjust these to change the density and speed of the stars
-    const meteorCount = 20; 
+    const meteorCount = 50; 
     const meteors: any[] = [];
 
     const createMeteor = () => {
@@ -26,7 +26,7 @@ export default function MeteorShower() {
         y: Math.random() * height * -1, // Start above the screen
         length: Math.random() * 100 + 40, // Length of the tail
         speed: Math.random() * 15 + 10, // How fast they fall
-        opacity: Math.random() * 0.4 + 0.1, // Subtle brightness
+        opacity: Math.random() * 0.5 + 0.1, // Subtle brightness
         thickness: Math.random() * 1.5 + 0.5
       };
     };
