@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
@@ -202,7 +203,7 @@ export default function Services() {
 
   return (
     <>
-      <section ref={containerRef} className="py-32 px-6 md:px-12 relative border-t border-white/10 z-10 bg-[#050505] perspective-[2000px]">
+      <section ref={containerRef} className="py-32 px-6 md:px-12 relative border-t border-white/10 z-10 bg-dark perspective-[2000px]">
         <div className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
           <h2 className="font-display text-6xl md:text-8xl tracking-tighter">Capabilities</h2>
           <p className="max-w-md text-white/50 text-sm uppercase tracking-widest leading-relaxed">
@@ -219,7 +220,7 @@ export default function Services() {
               onMouseLeave={() => { handleMouseLeave(idx); handleHoverRemove(); }}
               onMouseEnter={handleHoverAdd}
               onClick={() => openCard(idx)}
-              className={`group relative h-[450px] p-10 rounded-2xl bg-white/[0.02] border border-white/10 overflow-hidden cursor-pointer transition-opacity duration-300 ${activeService?.index === idx ? 'opacity-0' : 'opacity-100'}`}
+              className={`group relative h-112.5 p-10 rounded-2xl bg-white/2 border border-white/10 overflow-hidden cursor-pointer transition-opacity duration-300 ${activeService?.index === idx ? 'opacity-0' : 'opacity-100'}`}
               style={{ transformStyle: 'preserve-3d' }}
             >
               <div 
@@ -233,7 +234,7 @@ export default function Services() {
                     {service.id}
                   </span>
                   <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white transition-colors duration-500">
-                    <span className="text-white group-hover:text-[#050505] text-xl font-light transform group-hover:rotate-90 transition-transform duration-500">+</span>
+                    <span className="text-white group-hover:text-dark text-xl font-light transform group-hover:rotate-90 transition-transform duration-500">+</span>
                   </div>
                 </div>
 
@@ -249,10 +250,10 @@ export default function Services() {
         </div>
       </section>
 
-      <div ref={expandedWrapperRef} className="fixed inset-0 z-[100] hidden">
+      <div ref={expandedWrapperRef} className="fixed inset-0 z-100 hidden">
         <div 
           ref={backdropRef} 
-          className="absolute inset-0 bg-[#050505]/90 backdrop-blur-md opacity-0"
+          className="absolute inset-0 bg-dark/90 backdrop-blur-md opacity-0"
           onClick={closeCard}
         />
 
@@ -264,7 +265,7 @@ export default function Services() {
             {/* --- FIX: Added data-lenis-prevent="true" to allow scrolling inside this specific div --- */}
             <div 
                data-lenis-prevent="true"
-               className="w-full md:w-1/2 p-8 md:p-16 flex flex-col h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+               className="w-full md:w-1/2 p-8 md:p-16 flex flex-col h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
             >
               
               <div className="flex justify-between items-start mb-12">
@@ -308,13 +309,13 @@ export default function Services() {
                    alt={activeService.data.title}
                    className="w-full h-full object-cover opacity-80"
                  />
-                 <div className="absolute inset-0 bg-gradient-to-t from-[#111]/80 to-transparent"></div>
+                 <div className="absolute inset-0 bg-linear-to-t from-[#111]/80 to-transparent"></div>
                  
                  <button 
                     onClick={closeCard}
                     onMouseEnter={handleHoverAdd}
                     onMouseLeave={handleHoverRemove}
-                    className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white hover:text-[#050505] transition-colors z-20"
+                    className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white hover:text-dark transition-colors z-20"
                  >
                    ✕
                  </button>
