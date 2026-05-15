@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
@@ -6,7 +7,6 @@ import { handleHoverAdd, handleHoverRemove } from './CustomCursor';
 
 const textSideA = "We are a digital atelier crafting immersive experiences that live at the intersection of design, technology, and human emotion. We don't just build websites; we engineer digital atmospheres.";
 
-// Premium abstract placeholders for the floating gallery
 const floatingImages = [
   { src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800", top: "15%", left: "10%", width: "25vw", speed: 0.05, floatOffset: 20 },
   { src: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800", top: "60%", left: "20%", width: "18vw", speed: 0.08, floatOffset: -15 },
@@ -24,7 +24,7 @@ export default function About() {
     
     const ctx = gsap.context(() => {
       
-      // 1. Text Reveal Animation for the Dark Side
+      // 1. Text Reveal for Dark Side
       gsap.fromTo('.about-word-span', 
         { y: '100%' },
         { 
@@ -39,20 +39,21 @@ export default function About() {
         }
       );
 
-      // 2. Continuous Levitation for Floating Images
+      // 2. Continuous Autonomous Levitation
       imagesRef.current.forEach((img, i) => {
         if (!img) return;
-        gsap.to(img, {
+        const floater = img.querySelector('.floater');
+        gsap.to(floater, {
           y: floatingImages[i].floatOffset,
-          duration: 2 + Math.random(), // Randomize duration slightly for organic feel
+          duration: 2 + Math.random(),
           yoyo: true,
           repeat: -1,
           ease: "sine.inOut",
-          delay: Math.random() // Stagger starts
+          delay: Math.random() 
         });
       });
 
-      // 3. The Continuous Diagonal Sweep Animation
+      // 3. The Master Scroll Sequence
       const animState = { x: 150 }; 
       
       const updateClipPath = () => {
@@ -71,23 +72,63 @@ export default function About() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top", 
-          end: "+=200%", 
+          end: "+=300%", 
           pin: true,        
           scrub: 1,         
           anticipatePin: 1
         }
       });
 
+      // --- SEQUENCE START ---
+
+      // Step A: Diagonal Wipe covers the screen (Moves Right to Left)
       tl.to(animState, {
          x: -100, 
-         duration: 1,
+         duration: 1.5,
          ease: 'none',
          onUpdate: updateClipPath
       })
-      .to({}, { duration: 0.5 }) // Pause in the middle to interact with images
+      
+      // Step B: Text appears
+      .fromTo('.light-title-reveal', 
+         { autoAlpha: 0, y: 30 }, 
+         { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }
+      )
+      
+      // Step C: Images pop in
+      .fromTo(imagesRef.current, 
+         { autoAlpha: 0, scale: 0.7 }, 
+         { autoAlpha: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.5)" },
+         "-=0.2" 
+      )
+      
+      // Step D: Hold the layout so user can see it
+      .to({}, { duration: 1.5 }) 
+
+      // --- REVERSE SEQUENCE ---
+
+      // Step E: Images pop out in reverse order
+      .to(imagesRef.current, { 
+         autoAlpha: 0, 
+         scale: 0.7, 
+         duration: 0.6, 
+         stagger: -0.1, 
+         ease: "back.in(1.5)" 
+      })
+
+      // Step F: Text fades and slides up
+      .to('.light-title-reveal', { 
+         autoAlpha: 0, 
+         y: -30, 
+         duration: 0.5, 
+         stagger: -0.1 
+      }, "-=0.3")
+
+      // Step G: Diagonal Wipe CONTINUES off the screen to the left 
+      // (This was previously 150, breaking the continuous sweep. Now it continues to -350)
       .to(animState, {
          x: -350, 
-         duration: 1,
+         duration: 1.5,
          ease: 'none',
          onUpdate: updateClipPath
       });
@@ -97,9 +138,7 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
-  // --- Mouse Parallax Handler ---
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    // Calculate mouse position relative to the center of the screen
     const x = (e.clientX - window.innerWidth / 2);
     const y = (e.clientY - window.innerHeight / 2);
 
@@ -107,7 +146,6 @@ export default function About() {
       if (!img) return;
       const speed = floatingImages[index].speed;
       
-      // Move images in opposite directions with different depths based on speed
       gsap.to(img, {
         x: -x * speed,
         y: -y * speed,
@@ -145,48 +183,49 @@ export default function About() {
         </div>
       </div>
 
-      {/* --- LAYER 2: SIDE B (INTERACTIVE FLOATING GALLERY) --- */}
+      {/* --- LAYER 2: SIDE B (INTERACTIVE LIGHT THEME) --- */}
       <div 
         ref={lightLayerRef}
         className="absolute inset-0 flex items-center justify-center z-10 bg-white text-dark"
       >
-        {/* Central Title */}
         <div className="relative z-20 text-center pointer-events-none">
-          <h3 className="font-display text-sm tracking-widest uppercase opacity-40 mb-4">The Reality</h3>
-          <h2 className="font-display text-5xl md:text-7xl font-bold tracking-tighter">
+          <h3 className="light-title-reveal font-display text-sm tracking-widest uppercase opacity-40 mb-4 invisible">The Reality</h3>
+          <h2 className="light-title-reveal font-display text-5xl md:text-7xl font-bold tracking-tighter invisible">
             Visualizing<br/>The Unseen.
           </h2>
         </div>
 
-        {/* Floating Images Container */}
         {floatingImages.map((img, idx) => (
           <div
             key={idx}
             ref={el => { imagesRef.current[idx] = el; }}
-            onMouseEnter={(e) => {
-              handleHoverAdd();
-              // Scale up and bring to front on hover
-              gsap.to(e.currentTarget, { scale: 1.05, zIndex: 30, duration: 0.4, ease: "power2.out" });
-            }}
-            onMouseLeave={(e) => {
-              handleHoverRemove();
-              // Reset scale and z-index
-              gsap.to(e.currentTarget, { scale: 1, zIndex: 10, duration: 0.4, ease: "power2.out" });
-            }}
-            className="absolute rounded-xl overflow-hidden shadow-2xl cursor-pointer will-change-transform z-10"
+            className="absolute invisible opacity-0 z-10"
             style={{
               top: img.top,
               left: img.left,
               width: img.width,
-              // Use a generous aspect ratio
               aspectRatio: '4/5', 
             }}
           >
-            <img 
-              src={img.src} 
-              alt="Visual Exploration" 
-              className="w-full h-full object-cover"
-            />
+            <div 
+              className="floater w-full h-full rounded-xl overflow-hidden shadow-2xl cursor-pointer will-change-transform"
+              onMouseEnter={(e) => {
+                handleHoverAdd();
+                gsap.to(e.currentTarget, { scale: 1.05, duration: 0.4, ease: "power2.out" });
+                gsap.set(e.currentTarget.parentElement, { zIndex: 30 });
+              }}
+              onMouseLeave={(e) => {
+                handleHoverRemove();
+                gsap.to(e.currentTarget, { scale: 1, duration: 0.4, ease: "power2.out" });
+                gsap.set(e.currentTarget.parentElement, { zIndex: 10 });
+              }}
+            >
+              <img 
+                src={img.src} 
+                alt="Visual Exploration" 
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         ))}
       </div>
