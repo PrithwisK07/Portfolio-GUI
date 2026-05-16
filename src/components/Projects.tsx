@@ -129,9 +129,12 @@ export default function Projects() {
     isHoveringProject.current = true;
 
     if (hoverImageRef.current && viewBadgeRef.current) {
+      // Kill any lingering fade-out animations instantly
+      gsap.killTweensOf(hoverImageRef.current);
+      gsap.killTweensOf(viewBadgeRef.current);
+
       gsap.set(hoverImageRef.current, { left: e.clientX, top: e.clientY });
 
-      // Dynamic Solid Color Background
       hoverImageRef.current.style.backgroundColor = project.color;
 
       gsap.to(hoverImageRef.current, {
@@ -149,6 +152,10 @@ export default function Projects() {
     isHoveringProject.current = false;
 
     if (hoverImageRef.current && viewBadgeRef.current) {
+      // Stop the card from "chasing" the mouse into the next section
+      gsap.killTweensOf(hoverImageRef.current);
+      gsap.killTweensOf(viewBadgeRef.current);
+
       gsap.to(viewBadgeRef.current, { opacity: 0, duration: 0.2 });
       gsap.to(hoverImageRef.current, {
         opacity: 0,
@@ -169,6 +176,9 @@ export default function Projects() {
     if (!isHoveringProject.current) {
       isHoveringProject.current = true;
       if (hoverImageRef.current && viewBadgeRef.current) {
+        gsap.killTweensOf(hoverImageRef.current);
+        gsap.killTweensOf(viewBadgeRef.current);
+
         hoverImageRef.current.style.backgroundColor = project.color;
         gsap.to(hoverImageRef.current, {
           opacity: 1,
@@ -190,6 +200,7 @@ export default function Projects() {
         top: e.clientY,
         duration: 0.8,
         ease: "power3.out",
+        overwrite: "auto" // Ensures smooth overrides without conflicts
       });
 
       const relX = (e.clientX - rect.left) / rect.width - 0.5;
@@ -199,6 +210,7 @@ export default function Projects() {
         y: relY * 40,
         duration: 0.5,
         ease: "power2.out",
+        overwrite: "auto"
       });
     }
   };
@@ -275,7 +287,6 @@ export default function Projects() {
             const currentVal = isFloat
               ? obj.val.toFixed(1)
               : Math.ceil(obj.val);
-            // Safely update innerHTML (React ignores this due to dangerouslySetInnerHTML)
             valEl.innerHTML = `${prefix}${currentVal}${suffix}`;
           },
         });
@@ -385,7 +396,12 @@ export default function Projects() {
             Selected Works
           </h2>
         </div>
-        <div className="w-full flex flex-col border-t border-white/10">
+        
+        {/* ADDED: A global fallback onMouseLeave to the entire container to catch rapid scrolls out of the section */}
+        <div 
+          className="w-full flex flex-col border-t border-white/10" 
+          onMouseLeave={() => { handleHoverRemove(); handleProjectLeave(); }}
+        >
           {projectsData.map((project, idx) => (
             <div
               key={idx}
@@ -515,7 +531,6 @@ export default function Projects() {
                   <span className="text-xs uppercase tracking-widest text-white/50 mb-2">
                     {stat.label}
                   </span>
-                  {/* FIX: dangerouslySetInnerHTML prevents React from crashing when GSAP overwrites the text node */}
                   <span
                     className="stat-val font-display text-5xl md:text-7xl font-bold"
                     data-val={stat.val}
