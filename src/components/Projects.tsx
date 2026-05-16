@@ -121,29 +121,31 @@ export default function Projects() {
     }
   }, []);
 
-  const handleProjectEnter = (
-    e: React.MouseEvent,
-    project: (typeof projectsData)[0],
-  ) => {
+  const handleProjectEnter = (e: React.MouseEvent, project: (typeof projectsData)[0]) => {
     if (isModalOpen.current) return;
     isHoveringProject.current = true;
 
     if (hoverImageRef.current && viewBadgeRef.current) {
-      // Kill any lingering fade-out animations instantly
-      gsap.killTweensOf(hoverImageRef.current);
-      gsap.killTweensOf(viewBadgeRef.current);
+      // SMART FIX: Check if the card is already visible. 
+      const currentOpacity = Number(gsap.getProperty(hoverImageRef.current, "opacity"));
 
-      gsap.set(hoverImageRef.current, { left: e.clientX, top: e.clientY });
+      // Only snap it to the cursor if it is fully hidden (e.g., coming in from outside the section)
+      if (currentOpacity < 0.05) {
+        gsap.set(hoverImageRef.current, { left: e.clientX, top: e.clientY });
+      }
 
-      hoverImageRef.current.style.backgroundColor = project.color;
-
+      // Smoothly animate opacity, scale, AND background color 
+      // overwrite: "auto" gracefully overrides any fade-out animations without breaking momentum
       gsap.to(hoverImageRef.current, {
         opacity: 1,
         scale: 1,
+        backgroundColor: project.color,
         duration: 0.5,
         ease: "back.out(1.5)",
+        overwrite: "auto" 
       });
-      gsap.to(viewBadgeRef.current, { opacity: 1, duration: 0.3, delay: 0.1 });
+
+      gsap.to(viewBadgeRef.current, { opacity: 1, duration: 0.3, delay: 0.1, overwrite: "auto" });
     }
   };
 
@@ -152,44 +154,36 @@ export default function Projects() {
     isHoveringProject.current = false;
 
     if (hoverImageRef.current && viewBadgeRef.current) {
-      // Stop the card from "chasing" the mouse into the next section
-      gsap.killTweensOf(hoverImageRef.current);
-      gsap.killTweensOf(viewBadgeRef.current);
-
-      gsap.to(viewBadgeRef.current, { opacity: 0, duration: 0.2 });
+      gsap.to(viewBadgeRef.current, { opacity: 0, duration: 0.2, overwrite: "auto" });
       gsap.to(hoverImageRef.current, {
         opacity: 0,
         scale: 0.8,
         duration: 0.4,
         ease: "power3.out",
+        overwrite: "auto"
       });
     }
   };
 
-  const handleProjectMove = (
-    e: React.MouseEvent,
-    project: (typeof projectsData)[0],
-    rect: DOMRect,
-  ) => {
+  const handleProjectMove = (e: React.MouseEvent, project: (typeof projectsData)[0], rect: DOMRect) => {
     if (isModalOpen.current) return;
 
     if (!isHoveringProject.current) {
       isHoveringProject.current = true;
       if (hoverImageRef.current && viewBadgeRef.current) {
-        gsap.killTweensOf(hoverImageRef.current);
-        gsap.killTweensOf(viewBadgeRef.current);
-
-        hoverImageRef.current.style.backgroundColor = project.color;
         gsap.to(hoverImageRef.current, {
           opacity: 1,
           scale: 1,
+          backgroundColor: project.color,
           duration: 0.4,
           ease: "power3.out",
+          overwrite: "auto"
         });
         gsap.to(viewBadgeRef.current, {
           opacity: 1,
           duration: 0.3,
           delay: 0.1,
+          overwrite: "auto"
         });
       }
     }
@@ -200,7 +194,7 @@ export default function Projects() {
         top: e.clientY,
         duration: 0.8,
         ease: "power3.out",
-        overwrite: "auto" // Ensures smooth overrides without conflicts
+        overwrite: "auto" // Critical for preventing the "stray tween" bug on fast scrolls
       });
 
       const relX = (e.clientX - rect.left) / rect.width - 0.5;
@@ -397,7 +391,7 @@ export default function Projects() {
           </h2>
         </div>
         
-        {/* ADDED: A global fallback onMouseLeave to the entire container to catch rapid scrolls out of the section */}
+        {/* Global onMouseLeave fallback stays intact */}
         <div 
           className="w-full flex flex-col border-t border-white/10" 
           onMouseLeave={() => { handleHoverRemove(); handleProjectLeave(); }}
@@ -412,7 +406,7 @@ export default function Projects() {
               }}
               onMouseLeave={() => {
                 handleHoverRemove();
-                handleProjectLeave();
+                handleProjectLeave(); // Individual triggers stay to handle row-hopping
               }}
               onMouseMove={(e) =>
                 handleProjectMove(
