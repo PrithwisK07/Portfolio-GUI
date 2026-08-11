@@ -104,8 +104,16 @@ export default function Footer() {
 
   return (
     <section id="contact" className="h-screen py-32 px-6 md:px-12 flex flex-col justify-center items-center text-center relative border-t border-white/10 overflow-hidden">
-      
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full font-display text-[20vw] font-black text-white/2 whitespace-nowrap pointer-events-none tracking-tighter z-0">
+      {/* THE NEW GRID BACKGROUND */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-60 z-0"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px)`,
+          backgroundSize: '96px 96px'
+        }}
+      />
+
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full font-display text-[20vw] font-black text-white/4 whitespace-nowrap pointer-events-none tracking-tighter z-0">
         HELLO
       </div>
       
@@ -113,10 +121,6 @@ export default function Footer() {
         Ready to create something extraordinary?
       </h2>
       
-      {/* 
-        We rely entirely on inline styles for the button's core dimensions. 
-        This prevents Tailwind classes from fighting with GSAP's layout engine.
-      */}
       <div 
         ref={btnRef}
         onClick={handleExpand}
@@ -140,6 +144,7 @@ export default function Footer() {
           ref={contentRef} 
           className="absolute inset-0 flex flex-col justify-center items-center opacity-0 invisible p-8 w-full h-full rotate-180"
         >
+
           <button 
             onClick={handleClose}
             className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black hover:border-transparent transition-colors z-30 cursor-pointer"
@@ -149,7 +154,7 @@ export default function Footer() {
             ✕
           </button>
           
-          <h3 className="font-display text-lg md:text-xl text-white/40 mb-4 uppercase tracking-widest">
+          <h3 className="font-display text-lg md:text-xl text-white/40 mb-4 uppercase tracking-widest relative z-10">
             Drop us a line
           </h3>
           
