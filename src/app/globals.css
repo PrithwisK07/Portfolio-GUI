@@ -9,7 +9,8 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
 
-  --font-palma: "PPPalma", sans-serif;
+  --font-palma-heavy: "PPPalmaHeavy", sans-serif;
+  --font-palma-medium: "PPPalmaMedium", sans-serif;
   --font-brisa: "Brisa", sans-serif;
 }
 
@@ -22,9 +23,17 @@
 }
 
 @font-face {
-  font-family: "PPPalma";
+  font-family: "PPPalmaHeavy";
   src: url("/font/PPPalma-FizzyHeavy.otf") format("opentype");
   font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PPPalmaMedium";
+  src: url("/font/PPPalma-FizzyMedium.otf") format("opentype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
