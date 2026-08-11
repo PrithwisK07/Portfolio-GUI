@@ -95,7 +95,9 @@ export default function Footer() {
         border: "0px solid rgba(255, 255, 255, 0)",
         color: "#050505", 
         duration: 0.8, 
-        ease: "power4.inOut" 
+        ease: "power4.inOut",
+        // THIS IS THE FIX: Remove inline styles once the animation completes
+        clearProps: "backgroundColor,color,border" 
       }, 0)
       .to(text, { opacity: 1, duration: 0.3 }, "-=0.3");
   };
@@ -118,16 +120,13 @@ export default function Footer() {
       <div 
         ref={btnRef}
         onClick={handleExpand}
-        className={`magnetic-btn font-display font-semibold text-xl flex flex-col items-center justify-center relative overflow-hidden z-20 shadow-2xl ${
+        className={`magnetic-btn font-display font-semibold text-xl flex flex-col items-center justify-center relative overflow-hidden z-20 shadow-2xl bg-[#f4f4f5] text-[#050505] border-0 border-transparent ${
           !isExpanded ? 'hover:bg-accent transition-colors duration-300 cursor-pointer' : 'cursor-default'
         }`}
         style={{
           width: 280,
           height: 88,
           borderRadius: 44,
-          backgroundColor: "#f4f4f5", // Light mode base
-          color: "#050505", // Dark text base
-          border: "0px solid rgba(255, 255, 255, 0)"
         }}
         onMouseEnter={(e) => { if (!isExpanded) handleHoverAdd(); }}
         onMouseLeave={(e) => { if (!isExpanded) { handleHoverRemove(); handleMagneticLeave(e); } }}

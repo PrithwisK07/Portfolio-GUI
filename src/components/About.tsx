@@ -51,7 +51,7 @@ const bubblesData = [
     bgColor: "#FF4D00", 
     textColor: "#EEFE43", 
     size: "clamp(500px, 18vw, 720px)", 
-    left: "50%" // Flawlessly centered using 50%
+    left: "50%" 
   },
 ];
 
@@ -107,41 +107,49 @@ export default function About() {
         }
       });
 
-      // Step A: Diagonal Wipe covers the screen
-      tl.to(animState, {
+      tl.addLabel("reveal")
+      
+      // Step A: Diagonal Wipe covers the screen (Right to Left)
+      .to(animState, {
          x: -100, 
-         duration: 1.5,
+         duration: 2, 
          ease: 'none',
          onUpdate: updateClipPath
-      })
-      
-      // Step B: Text fades in
-      .fromTo('.layer-2-content', 
-         { autoAlpha: 0, scale: 0.95 }, 
-         { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power2.out" }
+      }, "reveal")
+
+      // Step B: Slot Machine Letter Shuffle
+      // Scrolls the vertical reels upwards (-80%) to land on the 5th item (the real letter)
+      .fromTo('.slot-reel', 
+         { y: '0%' }, 
+         { 
+           y: '-80%', 
+           duration: 1.2, 
+           stagger: { each: 0.05, from: "end" }, 
+           ease: "power4.inOut" // A smooth acceleration and deceleration like a physical reel
+         }, 
+         "reveal+=0.1" 
       );
       
       // Step C: Bubbles float up
       bubblesRef.current.forEach((bubble, idx) => {
         const isLastBubble = idx === bubblesRef.current.length - 1;
-        
+
         if(isLastBubble)
           gsap.set(bubble, { scale: 0.3, xPercent: -50 });
         else
           gsap.set(bubble, { scale: 0.3, xPercent: 0 });
 
         tl.to(bubble, {
-          // The orange bubble (last one) stops at -115vh, docking it perfectly on the ceiling
           y: isLastBubble ? "-155vh" : "-250vh", 
           scale: 1.1,  
           rotation: isLastBubble ? 0 : Math.random() * 30 - 15,
           duration: 4, 
           ease: "none" 
         }, 
-        idx === 0 ? "-=0.2" : "-=3.2"); 
+        idx === 0 ? "reveal+=1.8" : "-=3.2"); 
       });
       
-      // Step D: Diagonal Wipe CONTINUES off the screen immediately (Pause removed)
+      // Step D: Diagonal Wipe CONTINUES off the screen immediately
       tl.to(animState, {
          x: -350, 
          duration: 1.5,
@@ -187,21 +195,71 @@ export default function About() {
         className="absolute inset-0 flex items-center justify-center z-10 bg-[#F1F0E8] overflow-hidden"
       >
         
-        {/* Central Static Content */}
-        {/* Added translate-y-[12vh] to smoothly shift the block downward, clearing space for the orange bubble */}
-        <div className="layer-2-content relative z-20 text-center flex flex-col items-center pointer-events-none px-4 translate-y-[4vh]">
+        <div className="layer-2-content relative z-20 text-center flex flex-col items-center pointer-events-auto px-4 translate-y-[4vh]">
+          
+          {/* Added 'group' to enable the hover-underline effect without JS */}
           <span 
-            className="text-[#FF3B00] text-4xl md:text-6xl mb-4 tracking-wide -rotate-10 font-brisa"
+            className="group relative cursor-pointer text-[#FF3B00] text-4xl md:text-6xl mb-4 tracking-wide -rotate-10 font-brisa inline-block"
+            onMouseEnter={handleHoverAdd}
+            onMouseLeave={handleHoverRemove}
           >
             Introducing...
+            
+            {/* Hand-drawn SVG underline with progressive drawing animation */}
+            <svg 
+              className="absolute left-0 -bottom-1 md:-bottom-2 w-full h-4 md:h-5" 
+              viewBox="0 0 200 20" 
+              preserveAspectRatio="none"
+              fill="none" 
+            >
+              <path 
+                d="M 2,15 Q 60,0 120,12 T 198,5" 
+                stroke="#FF3B00" 
+                strokeWidth="3.5" 
+                strokeLinecap="round"
+                pathLength="1"
+                className="[stroke-dasharray:1] [stroke-dashoffset:1] transition-all duration-500 ease-out group-hover:[stroke-dashoffset:0]" 
+              />
+            </svg>
           </span>
           
-          <h2 className="font-palma text-[15vw] md:text-[11vw] font-black tracking-tighter leading-[0.85] uppercase text-[#1C1C1C]">
-            The<br/>Biggest<br/>Ever
+          <h2 className="font-palma-heavy text-[15vw] md:text-[11vw] font-black tracking-normal leading-[0.5] uppercase text-[#1C1C1C] pointer-events-none">
+            {['THE', 'BIGGEST', 'EVER'].map((word, wordIdx) => (
+              <span key={wordIdx} className="block overflow-hidden">
+                {word.split('').map((char, charIdx) => {
+                  
+                  const charCode = char.charCodeAt(0);
+                  const dummy1 = String.fromCharCode(((charCode + 5) % 26) + 65);
+                  const dummy2 = String.fromCharCode(((charCode + 11) % 26) + 65);
+                  const dummy3 = String.fromCharCode(((charCode + 17) % 26) + 65);
+                  const dummy4 = String.fromCharCode(((charCode + 23) % 26) + 65);
+
+                  return (
+                    <span key={charIdx} className="relative inline-block h-[0.85em] overflow-hidden align-bottom">
+                      
+                      {/* 1. The Invisible Spacer: Dictates the exact natural width of the real character */}
+                      <span className="invisible inline-flex h-[1em] items-center justify-center">
+                        {char}
+                      </span>
+                      
+                      {/* 2. The Absolute Reel: Positioned over the spacer. Dummy widths no longer stretch the parent! */}
+                      <span className="slot-reel absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center will-change-transform">
+                        <span className="h-[0.7em] leading-none flex items-center justify-center">{dummy1}</span>
+                        <span className="h-[1em] leading-none flex items-center justify-center">{dummy2}</span>
+                        <span className="h-[1em] leading-none flex items-center justify-center">{dummy3}</span>
+                        <span className="h-[1em] leading-none flex items-center justify-center">{dummy4}</span>
+                        <span className="h-[1em] leading-none flex items-center justify-center">{char}</span>
+                      </span>
+                      
+                    </span>
+                  );
+                })}
+              </span>
+            ))}
           </h2>
           
-          <p className="mt-8 md:mt-12 text-sm md:text-lg font-medium max-w-md text-[#1C1C1C]/80 leading-relaxed">
-            The digital frontier is here. The world's most immersive web experiences unfold across the browser.
+          <p className="mt-8 md:mt-12 text-sm md:text-xl font-palma-medium max-w-md text-[#1C1C1C]/80 pointer-events-none">
+            The DIGITAL FRONTIER is here. The WORLD's most immersive WEB experiences unfold across the BROWSER.
           </p>
         </div>
 
@@ -221,11 +279,11 @@ export default function About() {
               top: '100%', 
             }}
           >
-            <span className="font-palma text-[80px] md:text-[150px] font-black leading-none text-white tracking-tighter">
+            <span className="font-palma-heavy text-[80px] md:text-[150px] font-black leading-none text-white tracking-tighter">
               {bubble.value}
             </span>
             <span 
-              className="font-palma text-2xl md:text-5xl font-extrabold uppercase tracking-tight mt-2 md:mt-4"
+              className="font-palma-heavy text-2xl md:text-5xl font-extrabold uppercase tracking-tight mt-2 md:mt-4"
               style={{ color: bubble.textColor }}
             >
               {bubble.label}
