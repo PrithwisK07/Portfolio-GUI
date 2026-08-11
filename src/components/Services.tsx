@@ -1,330 +1,355 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-import { handleHoverAdd, handleHoverRemove } from './CustomCursor';
 
-const servicesData = [
+// Base 6 unique items 
+const baseServices = [
   {
     id: "01",
+    tag: "The Vault",
     title: "Digital Strategy",
     desc: "We decode complex market algorithms to position your brand precisely where it needs to be, architecting roadmaps that guarantee digital dominance.",
     deliverables: ["Market & Competitor Analysis", "Brand Positioning & Identity", "Growth Architecture", "Technical SEO Audits"],
-    expandedText: "Our strategy phase isn't just about spreadsheets; it's about finding the white space in your industry. We map out user journeys that convert passive scrollers into brand evangelists.",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#111111]", 
+    textColor: "text-white",
   },
   {
     id: "02",
-    title: "Immersive Design",
-    desc: "Beyond mere aesthetics, we sculpt digital environments. Our interfaces are built on cognitive psychology to ensure every interaction feels inevitable.",
-    deliverables: ["UI/UX Prototyping", "WebGL & 3D Interactions", "Motion Guidelines", "Design System Engineering"],
-    expandedText: "We treat pixels like physical materials. By blending spatial design principles with interactive physics, we create interfaces that don't just look beautiful—they feel alive under the user's fingertips.",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop"
+    tag: "Page Transition Course",
+    title: "Page Transition Course",
+    desc: "Learn how to create seamless page transitions that take your websites to the next level. We cover everything from basic routing to complex WebGL swaps.",
+    deliverables: ["Next.js Routing", "Framer Motion", "GSAP Page Transitions", "WebGL Swaps"],
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#9DFF50]", 
+    textColor: "text-black",
   },
   {
     id: "03",
-    title: "Creative Engineering",
-    desc: "Ruthless optimization meets bleeding-edge tech. We write mathematical, un-breakable code utilizing custom WebGL pipelines and modern frameworks.",
-    deliverables: ["Next.js & React Ecosystems", "Custom Shader Development", "Headless CMS Integration", "Performance Optimization"],
-    expandedText: "Great design dies in poor execution. Our engineering team builds resilient, scalable architectures that deliver 60FPS animations without compromising load times or SEO performance.",
-    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop"
+    tag: "Buttons",
+    title: "Interactive Buttons",
+    desc: "A massive collection of magnetic, hover-responsive, and physics-based buttons ready to drop into your modern web applications.",
+    deliverables: ["Magnetic Hover", "SVG Path Animations", "Physics Based", "Copy & Paste Ready"],
+    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#6B46FF]", 
+    textColor: "text-white",
+  },
+  {
+    id: "04",
+    tag: "Easings",
+    title: "Custom Easings",
+    desc: "Stop using linear animations. Our library of custom bezier curves and physics springs will make your motion design feel incredibly premium.",
+    deliverables: ["Cubic Beziers", "Spring Physics", "Motion Guidelines", "GSAP Configs"],
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#FF8C42]", 
+    textColor: "text-black",
+  },
+  {
+    id: "05",
+    tag: "Icons",
+    title: "Vector Icons",
+    desc: "Hundreds of meticulously crafted vector icons optimized for the web. Lightweight, scalable, and beautifully animated for interaction.",
+    deliverables: ["SVG Sprites", "Animated Lottie", "React Components", "Figma File"],
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#007AFF]", 
+    textColor: "text-white",
+  },
+  {
+    id: "06",
+    tag: "Community",
+    title: "Private Community",
+    desc: "Join hundreds of other creative developers in our private Discord. Share work, get code reviews, and collaborate on bleeding-edge projects.",
+    deliverables: ["Discord Access", "Weekly Workshops", "Code Reviews", "Job Board"],
+    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop",
+    color: "bg-[#FF2D55]", 
+    textColor: "text-white",
   }
 ];
 
+// 24 items in total (4 full loops) to map symmetrically onto a 360 degree circle
+const wheelData = Array.from({ length: 4 }).flatMap((_, i) => 
+  baseServices.map((service, index) => ({
+    ...service,
+    uniqueId: `${service.id}-clone-${i}`,
+    logicalIndex: index
+  }))
+);
+
+const TOTAL_UNIQUE_ITEMS = baseServices.length;
+
 export default function Services() {
   const containerRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   
-  const expandedWrapperRef = useRef<HTMLDivElement>(null);
-  const expandedCardRef = useRef<HTMLDivElement>(null);
-  const backdropRef = useRef<HTMLDivElement>(null);
-  const expandedCtx = useRef<gsap.Context | null>(null);
+  // States
+  const [activeIndex, setActiveIndex] = useState(0);
+  const lastActiveIndex = useRef(0);
 
-  const [activeService, setActiveService] = useState<{ index: number, data: typeof servicesData[0], rect: DOMRect } | null>(null);
+  // Drag state
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const currentRotation = useRef(0);
+  const targetRotation = useRef(0);
+  const cursorVisible = useRef(false);
 
+  // Configuration for spacing and curvature
+  const radius = 3000; 
+  const cardSpacingAngle = 15; 
+  const tickRadius = radius + 120; 
+
+  // --- GSAP Animation for Smooth Button Morphing ---
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "bottom top",
-          toggleActions: "play reverse play reverse", 
-        }
-      });
-
-      tl.fromTo(cardsRef.current,
-        { y: 200, opacity: 0, rotationY: 15, rotationX: 10, scale: 0.9 },
-        { y: 0, opacity: 1, rotationY: 0, rotationX: 0, scale: 1, duration: 1.2, stagger: 0.15, ease: "back.out(1.2)" },
-        "+=0.2"
-      );
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
-
-  useEffect(() => {
-    if (!activeService || !expandedCardRef.current || !backdropRef.current) return;
-
-    expandedCtx.current = gsap.context(() => {
-      const { rect } = activeService;
-
-      gsap.set(expandedWrapperRef.current, { display: 'block' });
-      gsap.to(backdropRef.current, { opacity: 1, duration: 0.5, ease: 'power2.out' });
-
-      gsap.set(expandedCardRef.current, {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-        xPercent: 0,
-        yPercent: 0,
-        borderRadius: '1rem',
-      });
-
-      gsap.to(expandedCardRef.current, {
-        top: '50%',
-        left: '50%',
-        width: '85vw', 
-        height: '85vh',
-        xPercent: -50,
-        yPercent: -50,
-        borderRadius: '2rem',
-        duration: 0.8,
-        ease: 'power4.inOut'
-      });
-
-      gsap.fromTo('.expanded-reveal', 
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.4 }
-      );
-      
-      gsap.fromTo('.expanded-image-block',
-        { scale: 0.9, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.6 }
-      );
-
-    });
-
-    return () => expandedCtx.current?.revert();
-  }, [activeService]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
-    if (activeService) return; 
-
-    const card = cardsRef.current[index];
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left; 
-    const y = e.clientY - rect.top;  
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
-
-    card.style.setProperty('--mouse-x', `${x}px`);
-    card.style.setProperty('--mouse-y', `${y}px`);
-
-    gsap.to(card, { rotateX, rotateY, duration: 0.4, ease: 'power2.out', transformPerspective: 1000, transformOrigin: "center center" });
-    
-    const innerContent = card.querySelector('.inner-content');
-    if (innerContent) gsap.to(innerContent, { x: rotateY * 1.5, y: -rotateX * 1.5, duration: 0.4, ease: 'power2.out' });
-  };
-
-  const handleMouseLeave = (index: number) => {
-    if (activeService) return;
-    const card = cardsRef.current[index];
-    if (!card) return;
-
-    gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
-    const innerContent = card.querySelector('.inner-content');
-    if (innerContent) gsap.to(innerContent, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
-  };
-
-  const openCard = (index: number) => {
-    if (activeService) return;
-    
-    if ((window as any).lenis) (window as any).lenis.stop();
-    document.body.style.overflow = 'hidden';
-
-    const card = cardsRef.current[index];
-    if (!card) return;
-
-    gsap.killTweensOf(card);
-    gsap.set(card, { rotateX: 0, rotateY: 0 });
-    
-    const innerContent = card.querySelector('.inner-content');
-    if (innerContent) {
-      gsap.killTweensOf(innerContent);
-      gsap.set(innerContent, { x: 0, y: 0 });
-    }
-
-    const rect = card.getBoundingClientRect();
-
-    setActiveService({ index, data: servicesData[index], rect });
-  };
-
-  const closeCard = () => {
-    if (!activeService || !expandedCardRef.current || !backdropRef.current) return;
-    
-    const { rect } = activeService;
-
-    gsap.to('.expanded-reveal, .expanded-image-block', { y: 20, opacity: 0, duration: 0.3, ease: 'power2.in' });
-
-    gsap.to(expandedCardRef.current, {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-      xPercent: 0,
-      yPercent: 0,
-      borderRadius: '1rem',
-      duration: 0.8,
-      ease: 'power4.inOut',
-      delay: 0.1
-    });
-
-    gsap.to(backdropRef.current, {
-      opacity: 0,
-      duration: 0.5,
-      delay: 0.4,
-      onComplete: () => {
-        gsap.set(expandedWrapperRef.current, { display: 'none' });
-        setActiveService(null);
-        
-        if ((window as any).lenis) (window as any).lenis.start();
-        document.body.style.overflow = '';
+    buttonRefs.current.forEach((btn, i) => {
+      if (btn) {
+        gsap.to(btn, {
+          borderRadius: activeIndex === i ? 9999 : 4, // 9999px = full pill, 8px = rounded-md
+          duration: 0.6,
+          ease: "power3.out",
+          overwrite: "auto"
+        });
       }
     });
+  }, [activeIndex]);
+
+  useEffect(() => {
+    gsap.set(wheelRef.current, { rotation: 0, transformOrigin: "0px 0px" });
+    
+    const ticker = gsap.ticker.add(() => {
+      // INFINITE SCROLL WRAPPING
+      if (targetRotation.current > 180) {
+        targetRotation.current -= 360;
+        currentRotation.current -= 360;
+      } else if (targetRotation.current < -180) {
+        targetRotation.current += 360;
+        currentRotation.current += 360;
+      }
+
+      currentRotation.current += (targetRotation.current - currentRotation.current) * 0.08;
+      
+      if (wheelRef.current) {
+        gsap.set(wheelRef.current, { rotation: currentRotation.current, transformOrigin: "0px 0px" });
+      }
+
+      // Sync active button
+      const currentLogicalIndex = Math.round(-currentRotation.current / cardSpacingAngle);
+      const currentWrappedIndex = ((currentLogicalIndex % TOTAL_UNIQUE_ITEMS) + TOTAL_UNIQUE_ITEMS) % TOTAL_UNIQUE_ITEMS;
+      
+      if (currentWrappedIndex !== lastActiveIndex.current) {
+        lastActiveIndex.current = currentWrappedIndex;
+        setActiveIndex(currentWrappedIndex);
+      }
+    });
+
+    return () => gsap.ticker.remove(ticker);
+  }, []);
+
+  // --- Button Navigation ---
+  const handleButtonClick = (buttonIndex: number) => {
+    const currentRot = targetRotation.current;
+    const currentLogicalIndex = Math.round(-currentRot / cardSpacingAngle);
+    const currentWrappedIndex = ((currentLogicalIndex % TOTAL_UNIQUE_ITEMS) + TOTAL_UNIQUE_ITEMS) % TOTAL_UNIQUE_ITEMS;
+
+    let diff = buttonIndex - currentWrappedIndex;
+    if (diff > TOTAL_UNIQUE_ITEMS / 2) diff -= TOTAL_UNIQUE_ITEMS;
+    if (diff < -TOTAL_UNIQUE_ITEMS / 2) diff += TOTAL_UNIQUE_ITEMS;
+
+    targetRotation.current = currentRot - (diff * cardSpacingAngle);
+  };
+
+  // --- Drag & Cursor Interactions ---
+  const handlePointerDown = (e: React.PointerEvent) => {
+    let isOverHeader = false;
+    if (headerRef.current) {
+      const rect = headerRef.current.getBoundingClientRect();
+      // Calculate if the click is within the header/button area
+      isOverHeader = e.clientY <= rect.bottom + 40; 
+    }
+
+    // Only allow dragging if we are not clicking the header/buttons
+    if (!isOverHeader) {
+      isDragging.current = true;
+      startX.current = e.clientX;
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    let isOverHeader = false;
+    if (headerRef.current) {
+      const rect = headerRef.current.getBoundingClientRect();
+      // Set a buffer zone below the buttons so the custom cursor strictly 
+      // appears only when over the wheel (cards and ticks)
+      isOverHeader = e.clientY <= rect.bottom + 40;
+    }
+
+    if (isOverHeader && !isDragging.current) {
+      // Hide custom cursor, restore native cursor
+      if (cursorVisible.current) {
+        gsap.to(cursorRef.current, { scale: 0, opacity: 0, duration: 0.3, ease: 'power2.in' });
+        cursorVisible.current = false;
+        if (containerRef.current) containerRef.current.style.cursor = 'auto';
+      }
+    } else {
+      // Show custom cursor, hide native cursor
+      if (!cursorVisible.current) {
+        gsap.to(cursorRef.current, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.5)' });
+        cursorVisible.current = true;
+        if (containerRef.current) containerRef.current.style.cursor = 'none';
+      }
+      // Follow mouse
+      if (cursorRef.current) {
+        gsap.to(cursorRef.current, { x: e.clientX, y: e.clientY, duration: 0.1, ease: "power2.out" });
+      }
+    }
+
+    // Handle the actual wheel rotation logic
+    if (!isDragging.current) return;
+    
+    const deltaX = e.clientX - startX.current;
+    targetRotation.current += deltaX * 0.03; 
+    startX.current = e.clientX; 
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
+    // Snap to closest card seamlessly
+    targetRotation.current = Math.round(targetRotation.current / cardSpacingAngle) * cardSpacingAngle;
+  };
+
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+    // Ensure cursor cleans up when mouse leaves the entire section entirely
+    if (cursorVisible.current) {
+      gsap.to(cursorRef.current, { scale: 0, opacity: 0, duration: 0.3, ease: 'power2.in' });
+      cursorVisible.current = false;
+      if (containerRef.current) containerRef.current.style.cursor = 'auto';
+    }
   };
 
   return (
     <>
-      <section ref={containerRef} className="py-32 px-6 md:px-12 relative border-t border-white/10 z-10 bg-dark perspective-[2000px]">
-        <div className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
-          <h2 className="font-display text-6xl md:text-8xl tracking-tighter">Capabilities</h2>
-          <p className="max-w-md text-white/50 text-sm uppercase tracking-widest leading-relaxed">
-            We operate at the bleeding edge of the digital frontier, delivering solutions that defy standard conventions.
+      <div 
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-20 h-20 bg-[#222] text-white rounded-full flex items-center justify-center text-sm font-medium tracking-wide pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 opacity-0 scale-0 shadow-xl border border-white/10"
+        style={{ mixBlendMode: 'normal' }}
+      >
+        Drag
+      </div>
+
+      <section 
+        ref={containerRef} 
+        className="relative w-full h-[1200px] overflow-hidden bg-[#F5F5F5] select-none touch-none overscroll-none"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handleMouseLeave}
+      >
+        {/* Fixed Header */}
+        <div 
+          ref={headerRef}
+          className="absolute top-0 left-0 w-full pt-[15vh] pb-10 flex flex-col items-center justify-center z-10 text-center px-6 pointer-events-none"
+        >
+          <h2 className="font-display text-5xl md:text-8xl tracking-tighter text-[#111] mb-6 font-medium leading-tighter">
+            A growing toolkit for<br/>creative developers
+          </h2>
+          <p className="text-[#111]/70 text-lg mb-8">
+            Access everything with a single membership:
           </p>
+          
+          <div className="flex flex-nowrap overflow-x-auto scrollbar-none gap-1 max-w-full px-4 items-center justify-center pointer-events-auto p-1">
+            {baseServices.map((service, i) => (
+              <button 
+                key={service.id}
+                ref={(el) => { buttonRefs.current[i] = el; }}
+                onClick={() => handleButtonClick(i)}
+                // CSS only handles color transitions now; GSAP handles the border-radius perfectly
+                className={`px-6 py-3 text-sm font-medium whitespace-nowrap border transition-colors duration-300 ${
+                  activeIndex === i 
+                  ? 'bg-[#111] text-white border-transparent' 
+                  : 'bg-[#EAEAEA] text-[#111] border-transparent hover:bg-[#DFDFDF] hover:border-black/10'
+                }`}
+              >
+                {service.tag}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {servicesData.map((service, idx) => (
-            <div 
-              key={service.id}
-              ref={el => { cardsRef.current[idx] = el; }}
-              onMouseMove={(e) => handleMouseMove(e, idx)}
-              onMouseLeave={() => { handleMouseLeave(idx); handleHoverRemove(); }}
-              onMouseEnter={handleHoverAdd}
-              onClick={() => openCard(idx)}
-              className={`group relative h-112.5 p-10 rounded-2xl bg-white/2 border border-white/10 overflow-hidden cursor-pointer transition-opacity duration-300 ${activeService?.index === idx ? 'opacity-0' : 'opacity-100'}`}
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              <div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ background: `radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%)` }}
-              />
+        {/* Pivot Point at 3800px down */}
+        <div 
+          className="absolute w-0 h-0 pointer-events-none"
+          style={{ top: '3800px', left: '50%' }} 
+        >
+          {/* Stationary Compass / Tick Background */}
+          <div className="absolute inset-0">
+            {Array.from({ length: 450 }).map((_, i) => {
+              const angle = i * 0.8; 
+              const isMajorTick = i % 10 === 0; 
+              
+              return (
+                <div 
+                  key={`tick-${i}`}
+                  className={`absolute left-0 top-0 w-[2px] ${isMajorTick ? 'h-6 bg-black/20' : 'h-3 bg-black/10'}`}
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-${tickRadius}px)`,
+                  }}
+                />
+              );
+            })}
+          </div>
 
-              <div className="inner-content h-full flex flex-col justify-between relative z-10 pointer-events-none">
-                <div className="flex justify-between items-start">
-                  <span className="font-display text-5xl font-bold text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.2)] group-hover:text-white transition-colors duration-500">
-                    {service.id}
-                  </span>
-                  <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white transition-colors duration-500">
-                    <span className="text-white group-hover:text-dark text-xl font-light transform group-hover:rotate-90 transition-transform duration-500">+</span>
+          {/* Rotating Cards Layer */}
+          <div ref={wheelRef} className="absolute inset-0 will-change-transform">
+            {wheelData.map((service, i) => {
+              const idx = i - 12; 
+              const angle = idx * cardSpacingAngle; 
+              
+              return (
+                <div 
+                  key={service.uniqueId}
+                  className={`absolute left-0 top-0 w-[350px] md:w-[500px] h-[550px] md:h-[600px] rounded-[1.5rem] p-10 flex flex-col items-center text-center shadow-2xl ${service.color} ${service.textColor}`}
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px)`,
+                  }}
+                >
+                  <div className={`text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full mb-12 border ${service.textColor === 'text-black' ? 'border-black/10 bg-black/5' : 'border-white/10 bg-white/10'}`}>
+                    {service.deliverables[0]}
                   </div>
-                </div>
 
-                <div>
-                  <h3 className="font-display text-3xl mb-4 group-hover:-translate-y-2 transition-transform duration-500">{service.title}</h3>
-                  <p className="font-sans font-light text-white/60 leading-relaxed group-hover:-translate-y-2 transition-transform duration-500 delay-75">
+                  <div className="text-5xl mb-6 font-light">
+                    *
+                  </div>
+
+                  <h3 className="font-display text-4xl md:text-5xl tracking-tight mb-4 font-medium">
+                    {service.title}
+                  </h3>
+                  <p className={`text-sm md:text-base mb-auto px-4 leading-relaxed ${service.textColor === 'text-black' ? 'text-black/70' : 'text-white/70'}`}>
                     {service.desc}
                   </p>
+
+                  <div className="relative w-full h-[200px] mt-8 rounded-[1rem] overflow-hidden bg-black/20">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover mix-blend-overlay opacity-60 pointer-events-none"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <button className="px-6 py-3 bg-white text-black text-sm font-medium rounded-lg shadow-lg hover:scale-105 transition-transform pointer-events-auto cursor-pointer">
+                          Discover
+                       </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </section>
-
-      <div ref={expandedWrapperRef} className="fixed inset-0 z-100 hidden">
-        <div 
-          ref={backdropRef} 
-          className="absolute inset-0 bg-dark/90 backdrop-blur-md opacity-0"
-          onClick={closeCard}
-        />
-
-        {activeService && (
-          <div 
-            ref={expandedCardRef} 
-            className="absolute bg-[#111] border border-white/10 overflow-hidden flex flex-col md:flex-row shadow-2xl"
-          >
-            {/* --- FIX: Added data-lenis-prevent="true" to allow scrolling inside this specific div --- */}
-            <div 
-               data-lenis-prevent="true"
-               className="w-full md:w-1/2 p-8 md:p-16 flex flex-col h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
-            >
-              
-              <div className="flex justify-between items-start mb-12">
-                 <span className="expanded-reveal font-display text-accent text-xl tracking-widest uppercase">
-                   {activeService.data.id}
-                 </span>
-                 <button 
-                    onClick={closeCard}
-                    onMouseEnter={handleHoverAdd}
-                    onMouseLeave={handleHoverRemove}
-                    className="md:hidden w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-dark transition-colors"
-                 >✕</button>
-              </div>
-
-              <h2 className="expanded-reveal font-display text-4xl md:text-6xl tracking-tight mb-8">
-                {activeService.data.title}
-              </h2>
-              
-              <p className="expanded-reveal text-lg md:text-xl font-light text-white/80 leading-relaxed mb-12">
-                {activeService.data.expandedText}
-              </p>
-
-              <div className="mt-auto">
-                <h4 className="expanded-reveal text-sm uppercase tracking-widest text-white/40 mb-6">Core Deliverables</h4>
-                <ul className="flex flex-col gap-4 pb-12 md:pb-0">
-                  {activeService.data.deliverables.map((item, i) => (
-                    <li key={i} className="expanded-reveal flex items-center gap-4 text-white/90 border-b border-white/10 pb-3">
-                      <span className="w-2 h-2 rounded-full bg-accent"></span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-            </div>
-
-            <div className="hidden md:block w-1/2 p-4 h-full">
-              <div className="expanded-image-block w-full h-full rounded-xl overflow-hidden relative">
-                 <img 
-                   src={activeService.data.image} 
-                   alt={activeService.data.title}
-                   className="w-full h-full object-cover opacity-80"
-                 />
-                 <div className="absolute inset-0 bg-linear-to-t from-[#111]/80 to-transparent"></div>
-                 
-                 <button 
-                    onClick={closeCard}
-                    onMouseEnter={handleHoverAdd}
-                    onMouseLeave={handleHoverRemove}
-                    className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white hover:text-dark transition-colors z-20"
-                 >
-                   ✕
-                 </button>
-              </div>
-            </div>
-
-          </div>
-        )}
-      </div>
     </>
   );
 }
