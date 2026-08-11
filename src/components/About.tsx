@@ -7,17 +7,58 @@ import { handleHoverAdd, handleHoverRemove } from './CustomCursor';
 
 const textSideA = "We are a digital atelier crafting immersive experiences that live at the intersection of design, technology, and human emotion. We don't just build websites; we engineer digital atmospheres.";
 
-const floatingImages = [
-  { src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800", top: "15%", left: "10%", width: "25vw", speed: 0.05, floatOffset: 20 },
-  { src: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800", top: "60%", left: "20%", width: "18vw", speed: 0.08, floatOffset: -15 },
-  { src: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=800", top: "20%", left: "65%", width: "22vw", speed: 0.03, floatOffset: 25 },
-  { src: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800", top: "55%", left: "70%", width: "20vw", speed: 0.06, floatOffset: -20 },
+const bubblesData = [
+  { 
+    id: 1, 
+    value: "16", 
+    label: "AWARDS", 
+    bgColor: "#A37BFF", 
+    textColor: "#5710FF", 
+    size: "clamp(580px, 15vw, 700px)", 
+    left: "10%" 
+  },
+  { 
+    id: 2, 
+    value: "48", 
+    label: "PROJECTS", 
+    bgColor: "#03543A", 
+    textColor: "#B1FF05", 
+    size: "clamp(640px, 25vw, 840px)", 
+    left: "60%" 
+  },
+  { 
+    id: 3, 
+    value: "104", 
+    label: "CLIENTS", 
+    bgColor: "#2E51FF", 
+    textColor: "#2EFFF0", 
+    size: "clamp(560px, 20vw, 780px)", 
+    left: "-5%" 
+  },
+  { 
+    id: 4, 
+    value: "99%", 
+    label: "RETENTION", 
+    bgColor: "#FF107A", 
+    textColor: "#800080", 
+    size: "clamp(600px, 22vw, 800px)", 
+    left: "69%" 
+  },
+  { 
+    id: 5, 
+    value: "12", 
+    label: "OFFICES", 
+    bgColor: "#FF4D00", 
+    textColor: "#EEFE43", 
+    size: "clamp(500px, 18vw, 720px)", 
+    left: "50%" // Flawlessly centered using 50%
+  },
 ];
 
 export default function About() {
   const containerRef = useRef<HTMLElement>(null);
   const lightLayerRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const bubblesRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -39,21 +80,7 @@ export default function About() {
         }
       );
 
-      // 2. Continuous Autonomous Levitation
-      imagesRef.current.forEach((img, i) => {
-        if (!img) return;
-        const floater = img.querySelector('.floater');
-        gsap.to(floater, {
-          y: floatingImages[i].floatOffset,
-          duration: 2 + Math.random(),
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-          delay: Math.random() 
-        });
-      });
-
-      // 3. The Master Scroll Sequence
+      // 2. The Master Scroll Sequence
       const animState = { x: 150 }; 
       
       const updateClipPath = () => {
@@ -66,22 +93,21 @@ export default function About() {
              lightLayerRef.current.style.clipPath = `polygon(${topLeft}vw 0%, ${topRight}vw 0%, ${bottomRight}vw 100%, ${bottomLeft}vw 100%)`;
          }
       };
+      
       updateClipPath(); 
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top", 
-          end: "+=300%", 
+          end: "+=450%", 
           pin: true,        
           scrub: 1,         
           anticipatePin: 1
         }
       });
 
-      // --- SEQUENCE START ---
-
-      // Step A: Diagonal Wipe covers the screen (Moves Right to Left)
+      // Step A: Diagonal Wipe covers the screen
       tl.to(animState, {
          x: -100, 
          duration: 1.5,
@@ -89,44 +115,34 @@ export default function About() {
          onUpdate: updateClipPath
       })
       
-      // Step B: Text appears
-      .fromTo('.light-title-reveal', 
-         { autoAlpha: 0, y: 30 }, 
-         { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }
-      )
+      // Step B: Text fades in
+      .fromTo('.layer-2-content', 
+         { autoAlpha: 0, scale: 0.95 }, 
+         { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power2.out" }
+      );
       
-      // Step C: Images pop in
-      .fromTo(imagesRef.current, 
-         { autoAlpha: 0, scale: 0.7 }, 
-         { autoAlpha: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.5)" },
-         "-=0.2" 
-      )
+      // Step C: Bubbles float up
+      bubblesRef.current.forEach((bubble, idx) => {
+        const isLastBubble = idx === bubblesRef.current.length - 1;
+        
+        if(isLastBubble)
+          gsap.set(bubble, { scale: 0.3, xPercent: -50 });
+        else
+          gsap.set(bubble, { scale: 0.3, xPercent: 0 });
+
+        tl.to(bubble, {
+          // The orange bubble (last one) stops at -115vh, docking it perfectly on the ceiling
+          y: isLastBubble ? "-155vh" : "-250vh", 
+          scale: 1.1,  
+          rotation: isLastBubble ? 0 : Math.random() * 30 - 15,
+          duration: 4, 
+          ease: "none" 
+        }, 
+        idx === 0 ? "-=0.2" : "-=3.2"); 
+      });
       
-      // Step D: Hold the layout so user can see it
-      .to({}, { duration: 1.5 }) 
-
-      // --- REVERSE SEQUENCE ---
-
-      // Step E: Images pop out in reverse order
-      .to(imagesRef.current, { 
-         autoAlpha: 0, 
-         scale: 0.7, 
-         duration: 0.6, 
-         stagger: -0.1, 
-         ease: "back.in(1.5)" 
-      })
-
-      // Step F: Text fades and slides up
-      .to('.light-title-reveal', { 
-         autoAlpha: 0, 
-         y: -30, 
-         duration: 0.5, 
-         stagger: -0.1 
-      }, "-=0.3")
-
-      // Step G: Diagonal Wipe CONTINUES off the screen to the left 
-      // (This was previously 150, breaking the continuous sweep. Now it continues to -350)
-      .to(animState, {
+      // Step D: Diagonal Wipe CONTINUES off the screen immediately (Pause removed)
+      tl.to(animState, {
          x: -350, 
          duration: 1.5,
          ease: 'none',
@@ -138,28 +154,10 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const x = (e.clientX - window.innerWidth / 2);
-    const y = (e.clientY - window.innerHeight / 2);
-
-    imagesRef.current.forEach((img, index) => {
-      if (!img) return;
-      const speed = floatingImages[index].speed;
-      
-      gsap.to(img, {
-        x: -x * speed,
-        y: -y * speed,
-        duration: 1,
-        ease: "power2.out"
-      });
-    });
-  };
-
   return (
     <section 
       ref={containerRef} 
       id="about" 
-      onMouseMove={handleMouseMove}
       className="h-screen w-full relative border-t border-white/10 overflow-hidden"
     >
       
@@ -186,46 +184,52 @@ export default function About() {
       {/* --- LAYER 2: SIDE B (INTERACTIVE LIGHT THEME) --- */}
       <div 
         ref={lightLayerRef}
-        className="absolute inset-0 flex items-center justify-center z-10 bg-white text-dark"
+        className="absolute inset-0 flex items-center justify-center z-10 bg-[#F1F0E8] overflow-hidden"
       >
-        <div className="relative z-20 text-center pointer-events-none">
-          <h3 className="light-title-reveal font-display text-sm tracking-widest uppercase opacity-40 mb-4 invisible">The Reality</h3>
-          <h2 className="light-title-reveal font-display text-5xl md:text-7xl font-bold tracking-tighter invisible">
-            Visualizing<br/>The Unseen.
+        
+        {/* Central Static Content */}
+        {/* Added translate-y-[12vh] to smoothly shift the block downward, clearing space for the orange bubble */}
+        <div className="layer-2-content relative z-20 text-center flex flex-col items-center pointer-events-none px-4 translate-y-[4vh]">
+          <span 
+            className="text-[#FF3B00] text-4xl md:text-6xl mb-4 tracking-wide -rotate-10 font-brisa"
+          >
+            Introducing...
+          </span>
+          
+          <h2 className="font-palma text-[15vw] md:text-[11vw] font-black tracking-tighter leading-[0.85] uppercase text-[#1C1C1C]">
+            The<br/>Biggest<br/>Ever
           </h2>
+          
+          <p className="mt-8 md:mt-12 text-sm md:text-lg font-medium max-w-md text-[#1C1C1C]/80 leading-relaxed">
+            The digital frontier is here. The world's most immersive web experiences unfold across the browser.
+          </p>
         </div>
 
-        {floatingImages.map((img, idx) => (
+        {/* The Bubbles Container */}
+        {bubblesData.map((bubble, idx) => (
           <div
-            key={idx}
-            ref={el => { imagesRef.current[idx] = el; }}
-            className="absolute invisible opacity-0 z-10"
+            key={bubble.id}
+            ref={el => { bubblesRef.current[idx] = el; }}
+            onMouseEnter={handleHoverAdd}
+            onMouseLeave={handleHoverRemove}
+            className="absolute z-30 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer will-change-transform"
             style={{
-              top: img.top,
-              left: img.left,
-              width: img.width,
-              aspectRatio: '4/5', 
+              backgroundColor: bubble.bgColor,
+              width: bubble.size,
+              height: bubble.size,
+              left: bubble.left,
+              top: '100%', 
             }}
           >
-            <div 
-              className="floater w-full h-full rounded-xl overflow-hidden shadow-2xl cursor-pointer will-change-transform"
-              onMouseEnter={(e) => {
-                handleHoverAdd();
-                gsap.to(e.currentTarget, { scale: 1.05, duration: 0.4, ease: "power2.out" });
-                gsap.set(e.currentTarget.parentElement, { zIndex: 30 });
-              }}
-              onMouseLeave={(e) => {
-                handleHoverRemove();
-                gsap.to(e.currentTarget, { scale: 1, duration: 0.4, ease: "power2.out" });
-                gsap.set(e.currentTarget.parentElement, { zIndex: 10 });
-              }}
+            <span className="font-palma text-[80px] md:text-[150px] font-black leading-none text-white tracking-tighter">
+              {bubble.value}
+            </span>
+            <span 
+              className="font-palma text-2xl md:text-5xl font-extrabold uppercase tracking-tight mt-2 md:mt-4"
+              style={{ color: bubble.textColor }}
             >
-              <img 
-                src={img.src} 
-                alt="Visual Exploration" 
-                className="w-full h-full object-cover"
-              />
-            </div>
+              {bubble.label}
+            </span>
           </div>
         ))}
       </div>
