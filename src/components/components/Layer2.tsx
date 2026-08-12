@@ -3,7 +3,7 @@ import { handleHoverAdd, handleHoverRemove } from '../CustomCursor';
 import { bubblesData } from './aboutData';
 
 interface Layer2Props {
-  lightLayerRef: RefObject<HTMLDivElement>;
+  lightLayerRef: RefObject<HTMLDivElement | null>;
   bubblesRef: MutableRefObject<(HTMLDivElement | null)[]>;
 }
 
