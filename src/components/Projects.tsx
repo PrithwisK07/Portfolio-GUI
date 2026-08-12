@@ -384,7 +384,7 @@ export default function Projects() {
 
   return (
     <>
-      <section id="work" className="py-32">
+      <section id="work" className="py-32 bg-[#201D1D]">
         <div className="px-6 md:px-12 mb-16">
           <h2 className="font-display text-6xl md:text-8xl tracking-tighter">
             Selected Works

@@ -36,7 +36,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
 
     gsap.set(tvScreenRef.current, {
       width: "0vw",
-      height: "1px",
+      height: "0px",
       opacity: 1,
       pointerEvents: "auto"
     });
@@ -59,7 +59,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
     });
 
     tvTl.to(".tv-close-btn", { opacity: 0, duration: 0.2 })
-      .to(tvScreenRef.current, { height: "1px", duration: 0.5, ease: "expo.inOut" })
+      .to(tvScreenRef.current, { height: "0px", duration: 0.5, ease: "expo.inOut" })
       .to(tvScreenRef.current, { width: "0vw", duration: 0.3, ease: "power4.inOut" }, "+=0.1");
 
     gsap.to(".video-thumbnail-wrapper", { opacity: 1, duration: 0.3, delay: 0.8 });

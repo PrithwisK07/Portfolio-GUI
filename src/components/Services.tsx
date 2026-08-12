@@ -254,7 +254,7 @@ export default function Services() {
 
       <section 
         ref={containerRef} 
-        className="relative w-full h-[1300px] overflow-hidden bg-[#F5F5F5] select-none touch-none overscroll-none"
+        className="relative w-full h-[1400px] overflow-hidden bg-[#F5F5F5] select-none touch-none overscroll-none"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
