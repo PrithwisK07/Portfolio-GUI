@@ -3,9 +3,9 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 
-import Layer1 from './components/Layer1';
-import Layer2 from './components/Layer2';
-import Layer3 from './components/Layer3';
+import Layer1 from './sub-components/About/Layer1';
+import Layer2 from './sub-components/About/Layer2';
+import Layer3 from './sub-components/About/Layer3';
 
 export default function About() {
   const containerRef = useRef<HTMLElement>(null);

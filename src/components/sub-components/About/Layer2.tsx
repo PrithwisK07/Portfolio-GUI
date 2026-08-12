@@ -1,5 +1,5 @@
 import { RefObject, MutableRefObject } from 'react';
-import { handleHoverAdd, handleHoverRemove } from '../CustomCursor';
+import { handleHoverAdd, handleHoverRemove } from '../../CustomCursor';
 import { bubblesData } from './aboutData';
 
 interface Layer2Props {
