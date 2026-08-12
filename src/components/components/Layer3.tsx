@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { handleHoverAdd, handleHoverRemove } from '../CustomCursor';
 
 interface Layer3Props {
-  layer3Ref: RefObject<HTMLDivElement>;
+  layer3Ref: RefObject<HTMLDivElement | null>;
 }
 
 export default function Layer3({ layer3Ref }: Layer3Props) {
@@ -86,10 +86,10 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         </div>
 
         {/* Circular Compass Ticks */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40 z-[5]">
-          {Array.from({ length: 72 }).map((_, i) => (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+          {Array.from({ length: 75 }).map((_, i) => (
             <div key={i} className="absolute inset-0 flex items-center justify-center" style={{ transform: `rotate(${i * 5}deg)` }}>
-              <div className="w-[1px] h-[5px] md:h-[8px] bg-black/40 translate-y-[-160px] md:translate-y-[-240px]" />
+              <div className={`h-[5px] md:h-[8px] ${i % 5 !== 0 ? 'bg-[#565555]/40 w-[1px]' : 'bg-[#9DFE51] w-[3px] h-[9px] md:h-[14px]'} translate-y-[-160px] md:translate-y-[-240px]`} />
             </div>
           ))}
         </div>
