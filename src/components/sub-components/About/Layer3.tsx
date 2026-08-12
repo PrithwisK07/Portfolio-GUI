@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, RefObject } from 'react';
 import gsap from 'gsap';
-import { handleHoverAdd, handleHoverRemove } from '../CustomCursor';
+import { handleHoverAdd, handleHoverRemove } from '../../CustomCursor';
 
 interface Layer3Props {
   layer3Ref: RefObject<HTMLDivElement | null>;
