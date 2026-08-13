@@ -16,7 +16,7 @@ export default function Layer1() {
 
   // Mask & SVG Refs for visibility and timer control
   const svgRef = useRef<SVGSVGElement>(null);
-  const maskRef = useRef<SVGSVGElement>(null);
+  const maskRef = useRef<SVGCircleElement>(null);
 
   // Refs and state for Right Side 3D Interaction
   const cardsContainerRef = useRef<HTMLDivElement>(null);
@@ -76,13 +76,13 @@ export default function Layer1() {
       });
 
       const buildStep = (
-        ringRef: React.RefObject<HTMLDivElement>, 
-        imgOut: string | null, 
-        imgIn: string | null, 
-        targetRadius: number, 
+        ringRef: React.RefObject<HTMLDivElement | null>,
+        imgOut: string | null,
+        imgIn: string | null,
+        targetRadius: number,
         targetTickLength: number,
         targetStrokeWidth: number,
-        targetRotation: number, 
+        targetRotation: number,
         label: string
       ) => {
         
