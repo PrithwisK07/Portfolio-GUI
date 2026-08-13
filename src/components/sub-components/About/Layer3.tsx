@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, RefObject } from 'react';
 import gsap from 'gsap';
-import { handleHoverAdd, handleHoverRemove } from '../../CustomCursor';
 
 interface Layer3Props {
   layer3Ref: RefObject<HTMLDivElement | null>;
@@ -98,8 +97,6 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         <div 
           className="video-thumbnail-wrapper group relative z-20 cursor-pointer flex flex-col items-center" 
           onClick={handleTvTurnOn} 
-          onMouseEnter={handleHoverAdd} 
-          onMouseLeave={handleHoverRemove}
         >
           {/* Dynamic 'Play' Text - Anchored to the left of the video */}
           <div className=" font-display absolute right-full top-1/2 -translate-y-1/2 mr-6 md:mr-12 transition-transform duration-500 ease-out group-hover:-translate-x-8 pointer-events-none">
@@ -135,8 +132,6 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         <button 
           onClick={handleTvTurnOff}
           className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-60 opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
-          onMouseEnter={handleHoverAdd} 
-          onMouseLeave={handleHoverRemove}
         >
           <div className="w-10 h-10 md:w-12 md:h-12 bg-[#2E2E2E] hover:bg-[#3A3A3A] transition-colors rounded-full flex items-center justify-center text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

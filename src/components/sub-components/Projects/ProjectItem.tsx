@@ -1,15 +1,14 @@
 "use client";
 import React from "react";
 import { Project } from "./types";
-import { handleHoverAdd, handleHoverRemove } from "../../CustomCursor";
 
 interface ProjectItemProps {
   project: Project;
   indexStr: string;
   onEnter: (e: React.MouseEvent, project: Project, indexStr: string) => void;
   onLeave: () => void;
-  onMove: (e: React.MouseEvent, project: Project, rect: DOMRect) => void;
-  onClick: (project: Project) => void;
+  onMove: (e: React.MouseEvent, project: Project, indexStr: string, rect: DOMRect) => void;
+  onClick: (project: Project, indexStr: string) => void;
 }
 
 export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMove, onClick }: ProjectItemProps) {
@@ -17,15 +16,13 @@ export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMov
     <div
       className="project-item group w-full py-12 px-6 md:px-12 flex justify-between items-center cursor-pointer relative overflow-hidden"
       onMouseEnter={(e) => {
-        handleHoverAdd();
         onEnter(e, project, indexStr);
       }}
       onMouseLeave={() => {
-        handleHoverRemove();
         onLeave();
       }}
-      onMouseMove={(e) => onMove(e, project, e.currentTarget.getBoundingClientRect())}
-      onClick={() => onClick(project)}
+      onMouseMove={(e) => onMove(e, project, indexStr, e.currentTarget.getBoundingClientRect())}
+      onClick={() => onClick(project, indexStr)}
     >
       {/* SHUTTER BACKGROUND */}
       <div className="absolute bottom-0 left-0 w-full h-0 bg-white transition-all duration-700 ease-out group-hover:h-full z-0" />
@@ -33,7 +30,7 @@ export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMov
       {/* LEFT CONTENT */}
       <div className="flex items-center gap-6 transition-transform duration-700 ease-out group-hover:translate-x-20 relative z-10">
         
-        {/* SLOT MACHINE INDEX (Increased to 6xl) */}
+        {/* SLOT MACHINE INDEX */}
         <span className="font-palma-heavy text-4xl md:text-6xl inline-flex h-[1em] overflow-hidden leading-none relative z-10 tracking-tighter">
           {indexStr.split('').map((char, i) => {
             const dummy = (parseInt(char) + 5) % 10;

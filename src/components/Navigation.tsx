@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import { handleHoverAdd, handleHoverRemove } from './CustomCursor';
 
 export default function Navigation() {
   const [isPinned, setIsPinned] = useState(false);
@@ -117,8 +116,6 @@ export default function Navigation() {
       
       <div 
         className="font-display font-bold text-xl tracking-tighter cursor-pointer pointer-events-auto mt-2 text-current" 
-        onMouseEnter={handleHoverAdd} 
-        onMouseLeave={handleHoverRemove}
         onClick={(e) => handleScrollTo(e, 'top')}
       >
         AETHER ©
@@ -142,8 +139,6 @@ export default function Navigation() {
                   key={link.label} 
                   href={link.href} 
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  onMouseEnter={handleHoverAdd} 
-                  onMouseLeave={handleHoverRemove}
                   className="menu-item-link relative group w-fit font-palma-heavy text-3xl font-bold uppercase tracking-tight text-white transition-opacity"
                 >
                   {link.label}
@@ -156,8 +151,6 @@ export default function Navigation() {
             <div 
               className="absolute bottom-0 left-0 w-full h-[64px] flex items-center justify-between px-5 cursor-pointer" 
               onClick={onClickToggle}
-              onMouseEnter={handleHoverAdd} 
-              onMouseLeave={handleHoverRemove}
             >
               <span className="font-palma-heavy text-[18px] tracking-widest uppercase">
                 {isExpanded ? 'Close' : 'Menu'}

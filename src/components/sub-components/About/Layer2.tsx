@@ -1,5 +1,4 @@
 import { RefObject, MutableRefObject } from 'react';
-import { handleHoverAdd, handleHoverRemove } from '../../CustomCursor';
 import { bubblesData } from './aboutData';
 
 interface Layer2Props {
@@ -16,8 +15,6 @@ export default function Layer2({ lightLayerRef, bubblesRef }: Layer2Props) {
       <div className="layer-2-content relative z-20 text-center flex flex-col items-center pointer-events-auto px-4 translate-y-[4vh]">
         <span 
           className="group relative cursor-pointer text-[#FF3B00] text-4xl md:text-6xl mb-4 tracking-wide -rotate-10 font-brisa inline-block"
-          onMouseEnter={handleHoverAdd}
-          onMouseLeave={handleHoverRemove}
         >
           Introducing...
           <svg className="absolute left-0 -bottom-1 md:-bottom-2 w-full h-4 md:h-5" viewBox="0 0 200 20" preserveAspectRatio="none" fill="none">
@@ -64,8 +61,6 @@ export default function Layer2({ lightLayerRef, bubblesRef }: Layer2Props) {
         <div
           key={bubble.id}
           ref={el => { bubblesRef.current[idx] = el; }}
-          onMouseEnter={handleHoverAdd}
-          onMouseLeave={handleHoverRemove}
           className="absolute z-30 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer will-change-transform"
           style={{ backgroundColor: bubble.bgColor, width: bubble.size, height: bubble.size, left: bubble.left, top: '100%' }}
         >

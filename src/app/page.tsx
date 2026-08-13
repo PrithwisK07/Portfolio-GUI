@@ -1,5 +1,4 @@
 import SmoothScroll from "@/components/SmoothScroll";
-import CustomCursor from "@/components/CustomCursor";
 import BackgroundCanvas from "@/components/BackgroundCanvas";
 import Preloader from "@/components/Preloader";
 import Navigation from "@/components/Navigation";
@@ -15,7 +14,6 @@ export default function Home() {
       <Preloader />
       <BackgroundCanvas />
       <div className="noise"></div>
-      <CustomCursor />
       <Navigation />
 
       <main id="smooth-wrapper">

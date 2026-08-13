@@ -45,43 +45,7 @@
 body {
   background-color: var(--color-dark);
   color: var(--color-light);
-  cursor: none;
   overflow-x: hidden;
-}
-
-/* Custom Cursor */
-.cursor-dot,
-.cursor-outline {
-  position: fixed;
-  top: 0;
-  left: 0;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  z-index: 9999;
-  pointer-events: none;
-}
-
-.cursor-dot {
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  background-color: var(--color-light);
-  mix-blend-mode: difference;
-}
-
-.cursor-outline {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(244, 244, 245, 0.5);
-  transition: width 0.2s, height 0.2s, background-color 0.2s;
-  mix-blend-mode: difference;
-}
-
-.cursor-hover .cursor-outline {
-  width: 80px;
-  height: 80px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: transparent;
-  backdrop-filter: blur(2px);
 }
 
 /* Utilities */
