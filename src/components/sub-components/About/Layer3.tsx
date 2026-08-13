@@ -134,7 +134,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         {/* Custom split pill close button */}
         <button 
           onClick={handleTvTurnOff}
-          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-[60] opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
+          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-60 opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
           onMouseEnter={handleHoverAdd} 
           onMouseLeave={handleHoverRemove}
         >
