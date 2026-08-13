@@ -113,7 +113,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full p-6 md:p-10 flex justify-between items-start z-[9999] pointer-events-none" id="main-nav">
+    <nav className="fixed top-0 left-0 w-full p-6 md:p-10 flex justify-between items-start z-[50] pointer-events-none" id="main-nav">
       
       <div 
         className="font-display font-bold text-xl tracking-tighter cursor-pointer pointer-events-auto mt-2 text-current" 

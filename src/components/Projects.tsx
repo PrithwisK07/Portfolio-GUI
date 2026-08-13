@@ -12,7 +12,6 @@ import ProjectModal from "./sub-components/Projects/ProjectsModal";
 export default function Projects() {
   const hoverImageRef = useRef<HTMLDivElement>(null);
   const projectModalRef = useRef<HTMLDivElement>(null);
-  const modalScrollCtx = useRef<gsap.Context | null>(null);
 
   const isModalOpen = useRef(false);
   const isHoveringProject = useRef(false);
@@ -21,6 +20,7 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project>(projectsData[0]);
   const [hoveredData, setHoveredData] = useState<{ project: Project; indexStr: string } | null>(null);
 
+  // Core Setup
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     if (hoverImageRef.current) {
@@ -32,6 +32,24 @@ export default function Projects() {
     }
   }, []);
 
+  // Hover Card Slot Animation
+  useEffect(() => {
+    if (hoveredData) {
+      // Rolls from 0em (showing the top dummy digit) to -2em (showing the real char)
+      gsap.fromTo(
+        ".hover-card-slot",
+        { y: "0em" },
+        { 
+          y: "-2em", 
+          duration: 0.7, 
+          ease: "power3.out", 
+          stagger: 0.1, 
+          overwrite: "auto" 
+        }
+      );
+    }
+  }, [hoveredData]);
+
   const handleProjectEnter = (e: React.MouseEvent, project: Project, indexStr: string) => {
     if (isModalOpen.current) return;
     isHoveringProject.current = true;
@@ -39,20 +57,26 @@ export default function Projects() {
     setHoveredData({ project, indexStr });
 
     if (hoverImageRef.current) {
+      const currentOpacity = Number(gsap.getProperty(hoverImageRef.current, "opacity"));
       anchorPos.current = { x: e.clientX, y: e.clientY };
 
-      // ALWAYS start fully elongated, regardless of whether it's jumping between rows
-      gsap.set(hoverImageRef.current, { 
-        left: anchorPos.current.x, 
-        top: anchorPos.current.y,
-        scaleY: 1.5, // Consistent downward elongation
-        scaleX: 1,
-        rotationX: 0,
-        rotationY: 0,
-        rotationZ: 0
-      });
+      if (currentOpacity < 0.05) {
+        gsap.set(hoverImageRef.current, { 
+          left: anchorPos.current.x, 
+          top: anchorPos.current.y,
+          scaleY: 1.5, 
+          scaleX: 1,
+          rotationX: 0,
+          rotationY: 0,
+          rotationZ: 0
+        });
+      } else {
+        gsap.set(hoverImageRef.current, { 
+          scaleY: 1.15, 
+          scaleX: 1 
+        });
+      }
 
-      // Smooth shrink-up to original bottom
       gsap.to(hoverImageRef.current, {
         opacity: 1,
         scaleY: 1,
@@ -70,7 +94,6 @@ export default function Projects() {
     isHoveringProject.current = false;
 
     if (hoverImageRef.current) {
-      // Elongate slightly back down while fading out
       gsap.to(hoverImageRef.current, {
         opacity: 0,
         scaleY: 1.1, 
@@ -96,7 +119,6 @@ export default function Projects() {
       const targetX = anchorPos.current.x + deltaX * dampening;
       const targetY = anchorPos.current.y + deltaY * dampening;
 
-      // Rotation for left/right tilt (CSS rotationY handles left/right pivoting)
       const maxTilt = 20; 
       const rotY = gsap.utils.clamp(-maxTilt, maxTilt, deltaX * 0.08);
 
@@ -105,7 +127,7 @@ export default function Projects() {
         top: targetY,
         rotationX: 0,
         rotationY: rotY,
-        rotationZ: 0, // Strict constraints on X and Z
+        rotationZ: 0,
         duration: 0.8,
         ease: "power3.out",
         overwrite: "auto",
@@ -121,7 +143,6 @@ export default function Projects() {
     if ((window as any).lenis) (window as any).lenis.stop();
     document.body.style.overflow = "hidden";
 
-    // Expand to full screen, ensuring scales and tilt are zeroed out
     gsap.to(hoverImageRef.current, {
       left: "50vw",
       top: "50vh",
@@ -217,15 +238,31 @@ export default function Projects() {
 
       <div
         ref={hoverImageRef}
-        className="fixed top-0 left-0 w-[300px] h-[400px] rounded-lg pointer-events-none opacity-0 z-10 overflow-hidden flex justify-center items-center"
+        className="fixed top-0 left-0 w-[300px] h-[400px] rounded-lg pointer-events-none opacity-0 z-10 overflow-hidden flex justify-center items-center !bg-none"
+        style={{ backgroundImage: 'none' }}
       >
         {hoveredData && (
           <>
-            <div className="absolute w-1/2 top-6 left-6 text-white font-brisa text-8xl z-20 pointer-events-none">
+            <div className="absolute w-1/2 top-6 left-6 text-white font-brisa text-7xl z-20 pointer-events-none">
               {hoveredData.project.title}
             </div>
-            <div className="absolute -bottom-8 right-0 text-white/20 font-palma-medium text-[12rem] font-bold z-0 leading-none pointer-events-none">
-              {hoveredData.indexStr}
+            
+            {/* HOVER CARD SLOT MACHINE INDEX */}
+            <div className="absolute -bottom-8 -right-4 text-white/20 font-palma-heavy text-[12rem] font-bold z-0 leading-none pointer-events-none flex h-[1em] overflow-hidden">
+              {hoveredData.indexStr.split('').map((char, i) => {
+                const dummy1 = (parseInt(char) + 3) % 10;
+                const dummy2 = (parseInt(char) + 7) % 10;
+                return (
+                  <span 
+                    key={`${hoveredData.project.id}-${i}`} 
+                    className="hover-card-slot flex flex-col -translate-y-[2em]"
+                  >
+                    <span className="h-[1em] flex items-center">{dummy1}</span>
+                    <span className="h-[1em] flex items-center">{dummy2}</span>
+                    <span className="h-[1em] flex items-center">{char}</span>
+                  </span>
+                );
+              })}
             </div>
           </>
         )}
