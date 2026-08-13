@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useState } from 'react';
 import gsap from 'gsap';
-import { handleHoverAdd, handleHoverRemove } from './CustomCursor';
 
 export default function Footer() {
   const btnRef = useRef<HTMLDivElement>(null);
@@ -132,8 +131,7 @@ export default function Footer() {
           height: 88,
           borderRadius: 44,
         }}
-        onMouseEnter={(e) => { if (!isExpanded) handleHoverAdd(); }}
-        onMouseLeave={(e) => { if (!isExpanded) { handleHoverRemove(); handleMagneticLeave(e); } }}
+        onMouseLeave={(e) => { if (!isExpanded) { handleMagneticLeave(e); } }}
         onMouseMove={handleMagneticMove}
       >
         <span ref={textRef} className="block pointer-events-none absolute">
@@ -148,8 +146,6 @@ export default function Footer() {
           <button 
             onClick={handleClose}
             className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black hover:border-transparent transition-colors z-30 cursor-pointer"
-            onMouseEnter={handleHoverAdd}
-            onMouseLeave={handleHoverRemove}
           >
             ✕
           </button>
@@ -161,8 +157,6 @@ export default function Footer() {
           <a 
             href="mailto:hello@aether.com"
             className="font-display text-4xl md:text-7xl text-white hover:text-accent transition-colors relative z-30"
-            onMouseEnter={handleHoverAdd}
-            onMouseLeave={handleHoverRemove}
           >
             hello@aether.com
           </a>

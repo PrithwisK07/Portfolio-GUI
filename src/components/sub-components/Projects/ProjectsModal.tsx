@@ -1,7 +1,6 @@
 "use client";
 import React, { RefObject } from "react";
 import { Project } from "./types";
-import { handleHoverAdd, handleHoverRemove } from "../../CustomCursor";
 
 interface ProjectModalProps {
   activeProject: Project;
@@ -18,8 +17,6 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
     >
       <button
         onClick={onClose}
-        onMouseEnter={handleHoverAdd}
-        onMouseLeave={handleHoverRemove}
         className="fixed top-6 right-6 md:top-10 md:right-10 uppercase tracking-widest text-xs border border-white/20 rounded-full px-6 py-3 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 z-50 mix-blend-normal"
       >
         Close
@@ -102,8 +99,6 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
           <div className="w-full flex flex-col gap-12 md:gap-24">
             <div
               className="w-full h-[60vh] md:h-[80vh] overflow-hidden rounded-xl relative group"
-              onMouseEnter={handleHoverAdd}
-              onMouseLeave={handleHoverRemove}
             >
               <img
                 src={activeProject.images.gallery1}
@@ -138,8 +133,6 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
           <button
             onClick={onClose}
             className="modal-text-reveal font-sans text-sm tracking-widest uppercase border-b border-white pb-1 hover:text-white/50 transition-colors"
-            onMouseEnter={handleHoverAdd}
-            onMouseLeave={handleHoverRemove}
           >
             Return to Index
           </button>
