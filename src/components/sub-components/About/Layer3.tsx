@@ -33,6 +33,9 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
     
     gsap.to(".video-thumbnail-wrapper", { opacity: 0, duration: 0.2 });
 
+    gsap.to("#main-nav", { opacity: 0, duration: 0.3, pointerEvents: "none" });
+    gsap.to("#main-nav", { display: "none", delay: 0.3});
+
     gsap.set(tvScreenRef.current, {
       width: "0vw",
       height: "0px",
@@ -57,11 +60,15 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
       }
     });
 
+    gsap.to("#main-nav", { opacity: 1, duration:0.7});
+    gsap.to("#main-nav", { display: "flex", delay: 0.7});
+
     tvTl.to(".tv-close-btn", { opacity: 0, duration: 0.2 })
       .to(tvScreenRef.current, { height: "0px", duration: 0.5, ease: "expo.inOut" })
       .to(tvScreenRef.current, { width: "0vw", duration: 0.3, ease: "power4.inOut" }, "+=0.1");
 
     gsap.to(".video-thumbnail-wrapper", { opacity: 1, duration: 0.3, delay: 0.8 });
+
   };
 
   return (
@@ -131,7 +138,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         {/* Custom split pill close button */}
         <button 
           onClick={handleTvTurnOff}
-          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-60 opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
+          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-[100] opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
         >
           <div className="w-10 h-10 md:w-12 md:h-12 bg-[#2E2E2E] hover:bg-[#3A3A3A] transition-colors rounded-full flex items-center justify-center text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
