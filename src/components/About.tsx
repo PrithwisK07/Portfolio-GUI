@@ -76,7 +76,7 @@ export default function About() {
   }, []);
 
   return (
-    <section ref={containerRef} id="about" className="h-screen w-full relative border-t border-white/10 overflow-hidden">
+    <section ref={containerRef} id="about" className="h-screen w-screen relative border-t border-white/10 overflow-hidden">
       <Layer1 />
       <Layer3 layer3Ref={layer3Ref} />
       <Layer2 lightLayerRef={lightLayerRef} bubblesRef={bubblesRef} />

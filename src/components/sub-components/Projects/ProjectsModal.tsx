@@ -13,7 +13,7 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
     <div
       ref={modalRef}
       data-lenis-prevent="true"
-      className="fixed inset-0 z-100 pointer-events-none opacity-0 overflow-y-auto overflow-x-hidden text-white modal-scroll"
+      className="fixed inset-0 z-100 pointer-events-none opacity-0 overflow-y-auto overflow-x-hidden text-white"
     >
       <button
         onClick={onClose}

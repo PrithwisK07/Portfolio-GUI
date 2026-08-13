@@ -40,16 +40,16 @@ export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMov
                 className="flex flex-col transition-transform duration-700 ease-out group-hover:-translate-y-[2em]"
                 style={{ transitionDelay: `${i * 75}ms` }} 
               >
-                <span className="h-[1em] flex items-center text-white/30">{char}</span>
-                <span className="h-[1em] flex items-center text-[#201D1D]/40">{dummy}</span>
-                <span className="h-[1em] flex items-center text-[#201D1D]/40">{char}</span>
+                <span className="h-[1em] flex items-center text-white">{char}</span>
+                <span className="h-[1em] flex items-center text-[#201D1D]">{dummy}</span>
+                <span className="h-[1em] flex items-center text-[#201D1D]">{char}</span>
               </span>
             );
           })}
         </span>
         
         {/* ARROW */}
-        <span className="opacity-0 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0 font-display text-3xl md:text-4xl text-accent transition-all duration-700 ease-out">
+        <span className="opacity-0 -translate-x-10 group-hover:opacity-100 group-hover:translate-x-0 font-display text-3xl md:text-4xl text-red-600 transition-all duration-700 ease-out">
           →
         </span>
         

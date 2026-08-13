@@ -121,7 +121,6 @@ export default function Services() {
 
     const ticker = gsap.ticker.add(() => {
       // --- Cursor Lerp Logic ---
-      // Moves 15% of the distance to the target each frame, creating a lazy trailing effect
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.15;
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.15;
       
@@ -191,7 +190,6 @@ export default function Services() {
       isOverHeader = e.clientY <= rect.bottom + 40;
     }
 
-    // Update target mouse position for the ticker to lerp towards
     targetMouse.current.x = e.clientX;
     targetMouse.current.y = e.clientY;
 
@@ -204,7 +202,6 @@ export default function Services() {
       }
     } else {
       if (!cursorVisible.current) {
-        // Force the physical cursor position to instantly match the mouse so it doesn't fly in
         currentMouse.current.x = e.clientX;
         currentMouse.current.y = e.clientY;
         gsap.set(cursorRef.current, { x: e.clientX, y: e.clientY });
@@ -263,7 +260,7 @@ export default function Services() {
       >
         <div 
           ref={headerRef}
-          className="absolute top-0 left-0 w-full pt-[17.5vh] pb-10 flex flex-col items-center justify-center z-10 text-center px-6 pointer-events-none gap-8"
+          className="absolute top-0 left-0 w-full pt-[17.5vh] pb-10 flex flex-col items-center justify-center z-20 text-center px-6 pointer-events-none gap-8"
         >
           <h2 className="font-display text-5xl md:text-8xl tracking-tighter text-[#111] font-medium leading-tighter">
             A growing toolkit for<br/>creative developers
@@ -290,6 +287,27 @@ export default function Services() {
           </div>
         </div>
 
+        {/* Static Anchored Arrows Overlay */}
+        {/* top = 3880 (wheel origin) - 3000 (radius) = 880px center point */}
+        <div 
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] md:w-[500px] h-[550px] md:h-[600px] pointer-events-none z-10"
+          style={{ top: '880px' }}
+        >
+          {/* Left Arrow */}
+          <div className="absolute top-1/2 -translate-y-1/2 -left-12 md:-left-25 w-8 h-8 text-red-600 scale-180 -scale-x-280">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 31 32" fill="none" className="scribble-arrow is--reel rotate-140">
+              <path d="M-1.3266e-06 0.812487L1.24998 0.603613L1.62857 -0.000167918C1.45886 1.95803 4.50712 2.87186 5.21207 4.73215C5.42421 5.2935 4.76822 5.38815 4.56913 5.21191C4.52018 5.16948 4.33088 4.48411 3.92945 4.0631C3.5835 3.7041 2.02674 1.96782 1.63183 2.28114C2.1377 7.34635 3.34526 11.9905 5.93334 16.3998C11.2009 25.3846 20.7308 30.3095 30.9689 31.1385C15.8484 31.7782 2.73822 19.0694 1.29894 4.23934C0.443857 4.58202 1.35768 7.3594 -1.04856e-06 7.17337L-1.32646e-06 0.815748L-1.3266e-06 0.812487Z" fill="currentColor"></path>
+            </svg>
+          </div>
+
+          {/* Right Arrow */}
+          <div className="absolute top-1/2 -translate-y-1/2 -right-12 md:-right-25 w-8 h-8 text-red-600 scale-280">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 31 32" fill="none" className="scribble-arrow is--reel rotate-140">
+              <path d="M-1.3266e-06 0.812487L1.24998 0.603613L1.62857 -0.000167918C1.45886 1.95803 4.50712 2.87186 5.21207 4.73215C5.42421 5.2935 4.76822 5.38815 4.56913 5.21191C4.52018 5.16948 4.33088 4.48411 3.92945 4.0631C3.5835 3.7041 2.02674 1.96782 1.63183 2.28114C2.1377 7.34635 3.34526 11.9905 5.93334 16.3998C11.2009 25.3846 20.7308 30.3095 30.9689 31.1385C15.8484 31.7782 2.73822 19.0694 1.29894 4.23934C0.443857 4.58202 1.35768 7.3594 -1.04856e-06 7.17337L-1.32646e-06 0.815748L-1.3266e-06 0.812487Z" fill="currentColor"></path>
+            </svg>
+          </div>
+        </div>
+
         <div 
           className="absolute w-0 h-0 pointer-events-none"
           style={{ top: '3880px', left: '50%' }} 
@@ -311,7 +329,7 @@ export default function Services() {
             })}
           </div>
 
-          <div ref={wheelRef} className="absolute inset-0 will-change-transform">
+          <div ref={wheelRef} className="absolute inset-0 will-change-transform z-0">
             {wheelData.map((service, i) => {
               const idx = i - 12; 
               const angle = idx * cardSpacingAngle; 
