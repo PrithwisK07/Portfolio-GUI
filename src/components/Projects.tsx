@@ -318,7 +318,7 @@ export default function Projects() {
         document.body.style.overflow = "";
 
         gsap.set(hoverImageRef.current, { zIndex: 10 });
-        gsap.to("#main-nav", { opacity: 1, duration: 0.3, pointerEvents: "auto" });
+        gsap.to("#main-nav", { opacity: 1, duration: 0.3});
       },
     });
   };
