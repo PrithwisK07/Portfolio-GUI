@@ -80,6 +80,21 @@ export default function Hero() {
     });
   };
 
+  // Smooth Scroll to #about when clicking the video area
+  const handleVideoClick = () => {
+    if (typeof window !== 'undefined') {
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.scrollTo('#about', { 
+          duration: 1.5, 
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+        });
+      } else {
+        document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     // Outer Wrapper creates the scroll distance (200vh) to allow for scrubbing without moving the page down
     <section ref={sectionRef} className="relative w-full h-[150vh] md:h-[200vh]">
@@ -87,30 +102,33 @@ export default function Hero() {
       {/* Inner Wrapper sticks to the screen while you scroll through the 200vh space */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#050505] text-[#050505]">
         
-        {/* Background Video */}
+        {/* Background Video (Updated with cache-buster and preload) */}
         <video 
           className="absolute top-0 left-0 w-full h-full scale-115 object-cover z-0 pointer-events-none" 
-          src="/asset/demo-kings-and-pig.mp4" 
+          preload="auto"
           autoPlay 
           muted 
           loop 
           playsInline 
-        />
+        >
+          <source src="/asset/demo-kings-and-pig.mp4?v=1" type="video/mp4" />
+        </video>
 
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/40 z-[1] pointer-events-none"></div>
 
-        {/* Interactive Area for Play Reel */}
+        {/* Interactive Area for Play Reel (Updated to pointer and added onClick) */}
         <div 
-          className="absolute inset-0 z-[2] cursor-default" 
+          className="absolute inset-0 z-[2] cursor-pointer-custom" 
           onMouseMove={handleMouseMove} 
           onMouseLeave={handleMouseLeave}
+          onClick={handleVideoClick}
         >
           {/* Invisible Anchor Point for the custom cursor text */}
           <div ref={anchorRef} className="absolute top-1/2 left-[20vw] md:left-[25vw] w-0 h-0">
             <div 
               ref={textRef} 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-max text-white text-sm font-medium tracking-wider text-center mix-blend-difference pointer-events-none reveal-fade opacity-0"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-max text-white text-xl font-haffer-regular font-medium tracking-wider text-center mix-blend-difference pointer-events-none reveal-fade opacity-0"
             >
               Play Reel<br/>(00:33)
             </div>
@@ -121,8 +139,7 @@ export default function Hero() {
         
         {/* Step 1: Top Right */}
         <div ref={step1Ref} className="hero-step absolute top-0 right-0 w-[100%] md:w-[50vw] lg:w-[45vw] h-[30vh] bg-white z-[10] flex items-start justify-between p-8 md:p-12 pt-24 md:pt-12">
-            <div className="reveal-text-wrapper"><span className="reveal-text text-xs md:text-sm font-bold tracking-wide">Work, Services, About</span></div>
-            <div className="reveal-text-wrapper"><span className="reveal-text text-xs md:text-sm font-bold tracking-wide border-b-2 border-black pb-1 cursor-pointer-custom">Start a project</span></div>
+            
         </div>
 
         {/* Step 2: Middle Right */}
