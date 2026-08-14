@@ -265,7 +265,7 @@ export default function Footer() {
   };
 
   return (
-    <section id="contact" className="h-screen py-32 px-6 md:px-12 flex flex-col justify-center items-center text-center relative border-t border-white/10 overflow-hidden">
+    <section id="contact" className="h-screen py-32 px-6 md:px-12 flex flex-col justify-center items-center text-center relative border-t border-white/10 overflow-hidden bg-[#201D1D]">
       <div
         className="absolute inset-0 pointer-events-none opacity-60 z-0"
         style={{
@@ -287,7 +287,7 @@ export default function Footer() {
         onClick={handleExpand}
         className={`magnetic-btn font-display font-semibold text-xl flex flex-col items-center justify-center relative overflow-hidden z-20 shadow-2xl bg-[#f4f4f5] text-[#050505] border-0 border-transparent ${
           !isExpanded
-            ? "hover:bg-accent transition-colors duration-300 cursor-pointer"
+            ? "hover:bg-accent transition-colors duration-300 cursor-pointer-custom"
             : "cursor-default"
         }`}
         style={{
@@ -310,7 +310,7 @@ export default function Footer() {
         >
           <button
             onClick={handleClose}
-            className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black hover:border-transparent transition-colors z-30 cursor-pointer"
+            className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:bg-white hover:text-black hover:border-transparent transition-colors z-30 cursor-pointer-custom"
           >
             ✕
           </button>

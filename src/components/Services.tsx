@@ -365,7 +365,7 @@ export default function Services() {
                       draggable={false}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                       <button className="px-6 py-3 bg-white text-black text-sm font-medium rounded-lg shadow-lg hover:scale-105 transition-transform pointer-events-auto cursor-pointer">
+                       <button className="px-6 py-3 bg-white text-black text-sm font-medium rounded-lg shadow-lg hover:scale-105 transition-transform pointer-events-auto cursor-pointer-custom">
                           Discover
                        </button>
                     </div>

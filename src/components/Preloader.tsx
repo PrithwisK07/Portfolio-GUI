@@ -20,7 +20,7 @@ export default function Preloader() {
       tl.fromTo(".willem__letter", 
         { yPercent: 100 },
         { yPercent: 0, stagger: 0.025, duration: 1.25 },
-        0 // Aligned with Nav reveal
+        0 
       );
 
       // 2. Open the image box space
@@ -54,27 +54,40 @@ export default function Preloader() {
         "-=0.05"
       );
 
-      // 5. Expand final element (the black div) to full screen
+      // 5. Expand final element (the Video) to full screen
       tl.to(".willem__growing-image",
-        { width: "100vw", height: "100vh", duration: 2 },
+        { width: "100vw", height: "100vh", scale: 1.15, duration: 2 },
         "< 1.25"
       );
       tl.to(".willem-loader__box",
-        { width: "110vw", duration: 2 },
+        { width: "100vw", duration: 2 },
         "<"
       );
 
       // 6. Seamless Handoff
       tl.set('.preloader', { autoAlpha: 0 });
 
-      // 7. Trigger Hero animations
-      tl.to('.reveal-text', 
-        { y: 0, duration: 1.2, stagger: 0.15, ease: 'power4.out' }
-      )
-      .to('.hero-meta', 
-        { opacity: 1, duration: 1 }, 
-        "-=0.5"
+      // 7. Slide in the 3 White Steps from the Right
+      tl.fromTo('.hero-step',
+        { xPercent: 100 },
+        { xPercent: 0, duration: 1.4, stagger: 0.15, ease: 'expo.inOut' }
       );
+
+      // 8. Trigger Text Reveal inside the steps 
+      // FIX: Changed from yPercent to y: "110%" and y: "0%" to properly override global.css
+      tl.fromTo('.reveal-text', 
+        { y: "110%" }, 
+        { y: "0%", duration: 1.2, stagger: 0.05, ease: 'power4.out' },
+        "-=0.8"
+      );
+
+      // 9. Fade in the circular "Play Reel" button
+      tl.fromTo('.reveal-fade',
+        { opacity: 0 },
+        { opacity: 1, duration: 1, ease: 'power2.out' },
+        "< 0.5"
+      );
+
     });
 
     return () => ctx.revert();
@@ -84,10 +97,8 @@ export default function Preloader() {
     <div className="preloader fixed inset-0 z-[10000] bg-[#f4f4f4] text-[#201d1d] flex justify-center items-center overflow-hidden font-display">
       <div className="willem-loader flex justify-center items-center w-full h-full absolute top-0 left-0 overflow-hidden">
         
-        {/* CHANGED: Added w-full so the flex items can properly divide the space */}
         <div className="willem__h1 flex w-full relative text-[5.5em] md:text-[9em] lg:text-[12.5em] font-medium leading-[0.75] whitespace-nowrap justify-center">
           
-          {/* CHANGED: Replaced w-fit with flex-1. This ensures the left and right sides are perfectly equal in width. */}
           <div className="willem__h1-start flex justify-end flex-1 overflow-hidden">
             <span className="willem__letter block relative">A</span>
             <span className="willem__letter block relative">e</span>
@@ -100,32 +111,39 @@ export default function Preloader() {
                 <div className="willem__growing-image-wrap absolute w-full min-w-[1em] h-full">
                   
                   <img
-                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-contain pointer-events-none select-none z-[3]"
+                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[3]"
                     src="/asset/layer3.png" 
                     alt="Section Screenshot 1"
                     loading="lazy"
                   />
                   <img
-                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-contain pointer-events-none select-none z-[2]"
+                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[2]"
                     src="/asset/layer1.png"
                     alt="Section Screenshot 2"
                     loading="lazy"
                   />
                   <img
-                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-contain pointer-events-none select-none z-[1]"
+                    className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[1]"
                     src="/asset/layer2.png"
                     alt="Section Screenshot 3"
                     loading="lazy"
                   />
                   
-                  <div className="willem__cover-image absolute top-0 left-0 w-full h-full bg-[#050505] pointer-events-none select-none z-[0]" />
+                  {/* The Video acting as the final expanding frame */}
+                  <video 
+                    className="willem__cover-image absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[0]" 
+                    src="/asset/demo-kings-and-pig.mp4" 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                  />
                   
                 </div>
               </div>
             </div>
           </div>
 
-          {/* CHANGED: Replaced w-fit with flex-1 to mirror the left side. */}
           <div className="willem__h1-end flex justify-start flex-1 overflow-hidden">
             <span className="willem__letter block relative">h</span>
             <span className="willem__letter block relative">e</span>

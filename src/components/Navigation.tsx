@@ -117,7 +117,7 @@ export default function Navigation() {
       */}
       <div className="global-nav-reveal opacity-0 fixed top-0 left-0 w-full p-6 md:p-10 flex justify-start items-start z-[10001] pointer-events-none mix-blend-difference">
         <div 
-          className="font-display font-bold text-xl tracking-tighter cursor-pointer pointer-events-auto mt-2 text-white" 
+          className="font-display font-bold text-xl tracking-tighter cursor-pointer-custom pointer-events-auto mt-2 text-white" 
           onClick={(e) => handleScrollTo(e, 'top')}
           id="main-logo"
         >
@@ -152,7 +152,7 @@ export default function Navigation() {
                 ))}
               </div>
               <div 
-                className="absolute bottom-0 left-0 w-full h-[64px] flex items-center justify-between px-5 cursor-pointer" 
+                className="absolute bottom-0 left-0 w-full h-[64px] flex items-center justify-between px-5 cursor-pointer-custom" 
                 onClick={onClickToggle}
               >
                 <span className="font-palma-heavy text-[18px] tracking-widest uppercase">
