@@ -112,32 +112,34 @@ export default function Preloader() {
                   
                   <img
                     className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[3]"
-                    src="/asset/layer3.png" 
+                    src="/asset/layer1.png" 
                     alt="Section Screenshot 1"
                     loading="lazy"
                   />
                   <img
                     className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[2]"
-                    src="/asset/layer1.png"
+                    src="/asset/layer2.png"
                     alt="Section Screenshot 2"
                     loading="lazy"
                   />
                   <img
                     className="willem__cover-image-extra absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[1]"
-                    src="/asset/layer2.png"
+                    src="/asset/layer3.png"
                     alt="Section Screenshot 3"
                     loading="lazy"
                   />
                   
-                  {/* The Video acting as the final expanding frame */}
                   <video 
-                    className="willem__cover-image absolute top-0 left-0 w-full h-full object-cover pointer-events-none select-none z-[0]" 
-                    src="/asset/demo-kings-and-pig.mp4" 
+                    className="absolute top-0 left-0 w-full h-full object-cover z-0 pointer-events-none" 
                     autoPlay 
                     muted 
                     loop 
-                    playsInline 
-                  />
+                    playsInline
+                    preload="auto"
+                  >
+                    {/* The ?v=1 acts as a cache-buster for this specific Chrome bug */}
+                    <source src="/asset/demo-kings-and-pig.mp4?v=1" type="video/mp4" />
+                  </video>
                   
                 </div>
               </div>
