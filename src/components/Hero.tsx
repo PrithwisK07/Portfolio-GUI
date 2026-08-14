@@ -4,12 +4,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function Hero() {
-  const sectionRef = useRef(null);
-  const step1Ref = useRef(null);
-  const step2Ref = useRef(null);
-  const step3Ref = useRef(null);
-  const anchorRef = useRef(null);
-  const textRef = useRef(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const step1Ref = useRef<HTMLDivElement | null>(null);
+  const step2Ref = useRef<HTMLDivElement | null>(null);
+  const step3Ref = useRef<HTMLDivElement | null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -17,7 +17,7 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       // Dynamically calculate exactly how far Step 2 & 3 need to move right
       // to align perfectly with the left edge of Step 1.
-      const getOffset = (el) => {
+      const getOffset = (el: HTMLElement | null) => {
         if (!step1Ref.current || !el) return 0;
         const offset = el.offsetWidth - step1Ref.current.offsetWidth;
         return offset > 0 ? offset : 0; // Ensures it doesn't break on mobile where widths match
@@ -53,7 +53,7 @@ export default function Hero() {
   }, []);
 
   // Smooth Lerp Follow for "Play Reel"
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!anchorRef.current || !textRef.current) return;
     const rect = anchorRef.current.getBoundingClientRect();
     const deltaX = e.clientX - rect.left;
@@ -135,7 +135,7 @@ export default function Hero() {
                 <div className="reveal-text-wrapper"><span className="reveal-text">+ Digital<br/>Production House</span></div>
             </div>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tighter ml-0 md:ml-24 lg:ml-32">
-                <div className="reveal-text-wrapper"><span className="reveal-text">Designing Tomorrow's</span></div><br/>
+                <div className="reveal-text-wrapper"><span className="reveal-text">Designing Tomorrow&apos;s</span></div><br/>
                 <div className="reveal-text-wrapper"><span className="reveal-text">Creative Landscape</span></div><br/>
                 <div className="reveal-text-wrapper"><span className="reveal-text">with The Unseen.</span></div>
             </h1>
