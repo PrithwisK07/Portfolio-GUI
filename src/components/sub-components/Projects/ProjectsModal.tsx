@@ -17,7 +17,7 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
     >
       <button
         onClick={onClose}
-        className="fixed top-6 right-6 md:top-10 md:right-10 uppercase tracking-widest text-xs border border-white/20 rounded-full px-6 py-3 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 z-50 mix-blend-normal"
+        className="fixed top-6 right-6 md:top-10 md:right-10 uppercase tracking-widest text-xs border border-white/20 rounded-full px-6 py-3 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black transition-colors duration-300 z-50 mix-blend-normal hover:cursor-pointer"
       >
         Close
       </button>
@@ -132,7 +132,7 @@ export default function ProjectModal({ activeProject, modalRef, onClose }: Proje
           </h2>
           <button
             onClick={onClose}
-            className="modal-text-reveal font-sans text-sm tracking-widest uppercase border-b border-white pb-1 hover:text-white/50 transition-colors"
+            className="modal-text-reveal font-sans text-sm tracking-widest uppercase border-b border-white pb-1 hover:text-white/50 transition-colors hover:cursor-pointer"
           >
             Return to Index
           </button>

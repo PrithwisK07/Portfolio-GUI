@@ -252,6 +252,10 @@ export default function Projects() {
     });
 
     gsap.to("#main-nav", { opacity: 0, duration: 0.3, pointerEvents: "none" });
+    gsap.to("#main-nav", { display: "none", delay: 0.3});
+
+    gsap.to("#main-logo", { opacity: 0, duration: 0.3, pointerEvents: "none" });
+    gsap.to("#main-logo", { display: "none", delay: 0.3});
 
     gsap.to(projectModalRef.current, {
       opacity: 1,
@@ -319,6 +323,10 @@ export default function Projects() {
 
         gsap.set(hoverImageRef.current, { zIndex: 10 });
         gsap.to("#main-nav", { opacity: 1, duration: 0.3});
+        gsap.to("#main-nav", { display: "flex", delay: 0.3});
+
+        gsap.to("#main-logo", { opacity: 1, delay: 0.3});
+        gsap.to("#main-logo", { display: "flex", delay: 0.3});
       },
     });
   };

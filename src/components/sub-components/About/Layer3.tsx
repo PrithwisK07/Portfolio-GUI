@@ -140,13 +140,13 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
           onClick={handleTvTurnOff}
           className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-[100] opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
         >
-          <div className="w-10 h-10 md:w-12 md:h-12 bg-[#2E2E2E] hover:bg-[#3A3A3A] transition-colors rounded-full flex items-center justify-center text-white">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-[#2E2E2E] group-hover:bg-[#3A3A3A] transition-colors rounded-full flex items-center justify-center text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </div>
-          <div className="h-10 md:h-12 bg-[#2E2E2E] hover:bg-[#3A3A3A] transition-colors rounded-lg flex items-center justify-center px-4 md:px-5">
+          <div className="h-10 md:h-12 bg-[#2E2E2E] group-hover:bg-[#3A3A3A] transition-colors rounded-lg flex items-center justify-center px-4 md:px-5">
             <span className="text-white font-medium text-sm md:text-base tracking-wide">Close</span>
           </div>
         </button>
