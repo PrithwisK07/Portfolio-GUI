@@ -58,10 +58,19 @@
   --cursor-size: 12px;
 }
 
+@utility cursor-pointer-custom-custom {
+  cursor: url("../../public/cursor/hand_small_point_n.svg") 4 4, pointer;
+}
+
 body {
   background-color: var(--color-dark);
   color: var(--color-light);
   overflow-x: hidden;
+  cursor: url("../../public/cursor/arrowhead-rounded-outline24.svg") 0 0, auto;
+}
+
+a {
+  cursor: url("../../public/cursor/hand_small_point_n.svg") 4 4, pointer;
 }
 
 /* Utilities */

@@ -14,7 +14,7 @@ interface ProjectItemProps {
 export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMove, onClick }: ProjectItemProps) {
   return (
     <div
-      className="project-item group w-full py-12 px-6 md:px-12 flex justify-between items-center cursor-pointer relative overflow-hidden"
+      className="project-item group w-full py-12 px-6 md:px-12 flex justify-between items-center cursor-pointer-custom relative overflow-hidden"
       onMouseEnter={(e) => {
         onEnter(e, project, indexStr);
       }}

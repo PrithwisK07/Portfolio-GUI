@@ -318,7 +318,7 @@ export default function Layer1() {
           {/* About Us Button with Smooth Scroll */}
           <button 
             onClick={handleScrollToProjects}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-black px-6 py-3 text-[15px] font-semibold tracking-wide rounded-[2px] z-50 hover:bg-gray-100 transition-colors cursor-pointer"
+            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-black px-6 py-3 text-[15px] font-semibold tracking-wide rounded-[2px] z-50 hover:bg-gray-100 transition-colors cursor-pointer-custom"
           >
             See Projects
           </button>
@@ -343,7 +343,7 @@ export default function Layer1() {
             
             {/* Top Hover Zone -> Triggers UP action */}
             <div 
-              className="absolute top-0 left-0 w-full h-[40%] z-30 cursor-pointer group flex justify-center items-start pt-10" 
+              className="absolute top-0 left-0 w-full h-[40%] z-30 cursor-pointer-custom group flex justify-center items-start pt-10" 
               onClick={() => handleCardTransition('up')}
             >
               <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0 shadow-lg">
@@ -353,7 +353,7 @@ export default function Layer1() {
 
             {/* Bottom Hover Zone -> Triggers DOWN action */}
             <div 
-              className="absolute bottom-0 left-0 w-full h-[40%] z-30 cursor-pointer group flex justify-center items-end pb-10" 
+              className="absolute bottom-0 left-0 w-full h-[40%] z-30 cursor-pointer-custom group flex justify-center items-end pb-10" 
               onClick={() => handleCardTransition('down')}
             >
               <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-y-4 group-hover:translate-y-0 shadow-lg">

@@ -102,7 +102,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
 
         {/* Video & Floating Text Wrapper */}
         <div 
-          className="video-thumbnail-wrapper group relative z-20 cursor-pointer flex flex-col items-center" 
+          className="video-thumbnail-wrapper group relative z-20 cursor-pointer-custom flex flex-col items-center" 
           onClick={handleTvTurnOn} 
         >
           {/* Dynamic 'Play' Text - Anchored to the left of the video */}
@@ -138,7 +138,7 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
         {/* Custom split pill close button */}
         <button 
           onClick={handleTvTurnOff}
-          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-[100] opacity-0 cursor-pointer flex items-center gap-1 group pointer-events-auto"
+          className="tv-close-btn absolute top-6 right-6 md:top-10 md:right-10 z-[100] opacity-0 cursor-pointer-custom flex items-center gap-1 group pointer-events-auto"
         >
           <div className="w-10 h-10 md:w-12 md:h-12 bg-[#2E2E2E] group-hover:bg-[#3A3A3A] transition-colors rounded-full flex items-center justify-center text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
