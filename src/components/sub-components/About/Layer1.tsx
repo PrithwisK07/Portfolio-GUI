@@ -254,7 +254,7 @@ export default function Layer1() {
   return (
     <div 
       ref={layerRef} 
-      className="relative min-h-screen w-full flex flex-col md:flex-row items-center justify-center px-4 md:px-8 py-12 md:py-0 z-[1] md:gap-8 bg-white" 
+      className="relative min-h-screen w-full flex flex-col md:flex-row items-center justify-center px-4 md:px-8 py-12 md:pt-20 z-[1] md:gap-8 bg-white" 
     >
       
       {/* ========================================= */}

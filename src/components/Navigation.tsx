@@ -68,13 +68,11 @@ export default function Navigation() {
     const lenis = (window as any).lenis;
     
     if (isPinnedRef.current) {
-      // Unpin and close
       isPinnedRef.current = false;
       setIsPinned(false);
       reverseAnim();
       if (lenis) lenis.start();
     } else {
-      // Pin and lock open
       isPinnedRef.current = true;
       setIsPinned(true);
       playAnim();
@@ -87,7 +85,6 @@ export default function Navigation() {
     
     const lenis = (window as any).lenis;
 
-    // Reset menu state and close upon clicking a link
     isPinnedRef.current = false;
     setIsPinned(false);
     reverseAnim();
@@ -108,67 +105,70 @@ export default function Navigation() {
   const menuLinks = [
     { label: 'About', href: '#about' },
     { label: 'Work', href: '#work' },
+    { label: 'Services', href: '#services' },
     { label: 'Contact', href: '#contact' }
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full p-6 md:p-10 flex justify-between items-start z-[50] pointer-events-none" id="main-nav">
-      
-      <div 
-        className="font-display font-bold text-xl tracking-tighter cursor-pointer pointer-events-auto mt-2 text-current" 
-        onClick={(e) => handleScrollTo(e, 'top')}
-      >
-        AETHER ©
+    <>
+      {/* 
+        LOGO CONTAINER
+        Added global-nav-reveal and updated z-[10001]
+      */}
+      <div className="global-nav-reveal opacity-0 fixed top-0 left-0 w-full p-6 md:p-10 flex justify-start items-start z-[10001] pointer-events-none mix-blend-difference">
+        <div 
+          className="font-display font-bold text-xl tracking-tighter cursor-pointer pointer-events-auto mt-2 text-white" 
+          onClick={(e) => handleScrollTo(e, 'top')}
+          id="main-logo"
+        >
+          AETHER ©
+        </div>
       </div>
       
-      <div className="flex items-start gap-8 text-sm font-medium tracking-wide pointer-events-auto text-current">
-
-        {/* Expanding Pill Menu */}
-        <div className="relative w-[140px] h-[64px]">
-          <div 
-            ref={menuContainerRef} 
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            className="absolute top-0 right-0 bg-[#ff4d00] text-white overflow-hidden shadow-lg"
-          >
-            
-            {/* Links Container */}
-            <div className="menu-links-container invisible absolute top-0 left-0 w-full p-6 pt-8 flex flex-col gap-2">
-              {menuLinks.map((link) => (
-                <a 
-                  key={link.label} 
-                  href={link.href} 
-                  onClick={(e) => handleScrollTo(e, link.href)}
-                  className="menu-item-link relative group w-fit font-palma-heavy text-3xl font-bold uppercase tracking-tight text-white transition-opacity"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
-                </a>
-              ))}
-            </div>
-
-            {/* Toggle Button Area */}
+      {/* 
+        NAVIGATION MENU CONTAINER
+        Added global-nav-reveal and updated z-[10001]
+      */}
+      <nav className="global-nav-reveal opacity-0 fixed top-0 left-0 w-full p-6 md:p-10 flex justify-end items-start z-[10001] pointer-events-none" id="main-nav">
+        <div className="flex items-start gap-8 text-sm font-medium tracking-wide pointer-events-auto">
+          <div className="relative w-[140px] h-[64px]">
             <div 
-              className="absolute bottom-0 left-0 w-full h-[64px] flex items-center justify-between px-5 cursor-pointer" 
-              onClick={onClickToggle}
+              ref={menuContainerRef} 
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              className="absolute top-0 right-0 bg-[#ff4d00] text-white overflow-hidden shadow-lg"
             >
-              <span className="font-palma-heavy text-[18px] tracking-widest uppercase">
-                {isExpanded ? 'Close' : 'Menu'}
-              </span>
-              
-              {/* 4 Dots Icon */}
-              <div className="dots-icon grid grid-cols-2 gap-[3px]">
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+              <div className="menu-links-container invisible absolute top-0 left-0 w-full p-6 pt-8 flex flex-col gap-2">
+                {menuLinks.map((link) => (
+                  <a 
+                    key={link.label} 
+                    href={link.href} 
+                    onClick={(e) => handleScrollTo(e, link.href)}
+                    className="menu-item-link relative group w-fit font-palma-heavy text-3xl font-bold uppercase tracking-tight text-white transition-opacity"
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                  </a>
+                ))}
+              </div>
+              <div 
+                className="absolute bottom-0 left-0 w-full h-[64px] flex items-center justify-between px-5 cursor-pointer" 
+                onClick={onClickToggle}
+              >
+                <span className="font-palma-heavy text-[18px] tracking-widest uppercase">
+                  {isExpanded ? 'Close' : 'Menu'}
+                </span>
+                <div className="dots-icon grid grid-cols-2 gap-[3px]">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
               </div>
             </div>
-
           </div>
         </div>
-
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }
