@@ -61,7 +61,7 @@ export default function Layer2({ lightLayerRef, bubblesRef }: Layer2Props) {
         <div
           key={bubble.id}
           ref={el => { bubblesRef.current[idx] = el; }}
-          className="absolute z-30 rounded-full flex flex-col items-center justify-center shadow-2xl cursor-pointer-custom will-change-transform"
+          className="absolute z-30 rounded-full flex flex-col items-center justify-center shadow-2xl will-change-transform"
           style={{ backgroundColor: bubble.bgColor, width: bubble.size, height: bubble.size, left: bubble.left, top: '100%' }}
         >
           <span className="font-palma-heavy text-[80px] md:text-[150px] font-black leading-none text-white tracking-tighter">{bubble.value}</span>
