@@ -16,15 +16,19 @@ export default function About() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add({
+      isDesktop: "(min-width: 1024px)",
+      isStacked: "(max-width: 1023px)"
+    }, (context) => {
+      const { isStacked } = context.conditions as { isStacked: boolean };
       
-      // 1. Text Reveal for Layer 1
       gsap.fromTo('.about-word-span', 
         { y: '100%' },
         { y: '0%', duration: 1, stagger: 0.02, ease: 'power3.out', scrollTrigger: { trigger: containerRef.current, start: "top 60%" } }
       );
 
-      // 2. The Master Scroll Sequence
       const animState = { x: 150 }; 
       
       const updateClipPath = () => {
@@ -43,22 +47,30 @@ export default function About() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top", 
-          end: "+=450%", 
+          // Drastically shortened the scroll distance for stacked devices for a snappy transition
+          end: isStacked ? "+=250%" : "+=450%", 
           pin: true,        
           scrub: 1,         
           anticipatePin: 1
         }
       });
 
+      if (isStacked) {
+         // Elevate the entire wrapper by one viewport height rapidly
+         tl.to('.layer1-scroll-wrapper', { 
+           y: () => -window.innerHeight, 
+           duration: 1.5, 
+           ease: "power2.inOut" 
+         });
+         // A much shorter pause before the wipe starts
+         tl.to({}, { duration: 0.2 });
+      }
+
       tl.addLabel("reveal")
-        // Step A: Diagonal Wipe covers the screen
         .to(animState, { x: -100, duration: 2, ease: 'none', onUpdate: updateClipPath }, "reveal")
-        // Step A.5: Dynamically swap Layer 3's z-index
         .set(layer3Ref.current, { zIndex: 5 }, "reveal+=2.1")
-        // Step B: Slot Machine Letter Shuffle
         .fromTo('.slot-reel', { y: '0%' }, { y: '-80%', duration: 1.2, stagger: { each: 0.05, from: "end" }, ease: "power4.inOut" }, "reveal+=0.1" );
       
-      // Step C: Bubbles float up
       bubblesRef.current.forEach((bubble, idx) => {
         const isLastBubble = idx === bubblesRef.current.length - 1;
         gsap.set(bubble, { scale: 0.3, xPercent: isLastBubble ? -50 : 0 });
@@ -67,16 +79,15 @@ export default function About() {
         }, idx === 0 ? "reveal+=1.8" : "-=3.2"); 
       });
       
-      // Step D: Diagonal Wipe CONTINUES off the screen immediately (Revealing Layer 3)
       tl.to(animState, { x: -350, duration: 1.5, ease: 'none', onUpdate: updateClipPath });
 
-    }, containerRef);
+    });
     
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
-    <section ref={containerRef} id="about" className="h-screen w-screen relative border-t border-white/10 overflow-hidden">
+    <section ref={containerRef} id="about" className="h-[100dvh] md:h-screen w-screen relative border-t border-white/10 overflow-hidden bg-white">
       <Layer1 />
       <Layer3 layer3Ref={layer3Ref} />
       <Layer2 lightLayerRef={lightLayerRef} bubblesRef={bubblesRef} />
