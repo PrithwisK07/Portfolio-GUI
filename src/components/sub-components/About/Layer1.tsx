@@ -140,14 +140,15 @@ export default function Layer1() {
   return (
     <div 
       ref={layerRef} 
-      className="layer1-scroll-wrapper relative w-full flex flex-col lg:flex-row items-center justify-start lg:justify-center px-4 md:px-8 py-0 lg:py-12 lg:pt-20 z-[1] gap-12 lg:gap-8 bg-white max-w-[1400px] mx-auto" 
+      className="layer1-scroll-wrapper relative w-full flex flex-col lg:flex-row items-center justify-start lg:justify-center px-4 md:px-8 py-0 lg:py-12 lg:pt-20 z-[1] gap-12 lg:gap-8 bg-white max-w-full mx-auto" 
     >
       
       {/* LEFT SIDE: Purple Interactive Container */}
-      <div className="w-full lg:w-[45%] flex items-center justify-center lg:justify-end shrink-0 h-[100dvh] lg:h-auto pt-24 pb-8 lg:pt-0 lg:pb-0">
+      <div className="w-full lg:w-[45%] flex items-center justify-center lg:justify-end shrink-0 min-h-[60dvh] lg:min-h-0 lg:h-auto pt-24 lg:pt-0">
+        {/* Adjusted md:w-[85%] based on your tablet design preference */}
         <div 
           ref={purpleBoxRef} 
-          className="relative w-full max-w-[420px] md:max-w-[600px] h-[420px] md:h-[550px] lg:h-[665px] bg-[#5e43f3] rounded-[2.5rem] lg:rounded-3xl overflow-hidden flex flex-col items-center justify-center shadow-2xl"
+          className="relative w-full max-w-[420px] md:w-[85%] md:max-w-none lg:w-full lg:max-w-[600px] h-[360px] md:h-[450px] lg:h-[665px] bg-[#5e43f3] rounded-[2.5rem] lg:rounded-3xl overflow-hidden flex flex-col items-center justify-center shadow-2xl mx-auto lg:mx-0"
         >
           <div className="absolute top-6 left-6 md:top-8 md:left-10 lg:top-8 lg:left-10 text-white z-50 pointer-events-none">
             <h3 className="text-xl md:text-2xl lg:text-3xl opacity-90 font-brisa">Created by</h3>
@@ -155,7 +156,7 @@ export default function Layer1() {
             <h2 className="text-lg md:text-xl lg:text-2xl font-haffer-light tracking-wide mt-1 opacity-90">Karmakar</h2>
           </div>
 
-          <div className="relative w-[480px] h-[480px] flex items-center justify-center scale-[0.5] md:scale-[0.75] lg:scale-100 top-4 md:top-8 lg:top-15">
+          <div className="relative w-[480px] h-[480px] flex items-center justify-center scale-[0.45] md:scale-[0.6] lg:scale-100 top-4 md:top-8 lg:top-15">
             <div ref={outerRingRef} className="absolute w-[440px] h-[440px] rounded-full overflow-hidden z-10">
               <img src={imageA} alt="Outer A" className="outer-imgA absolute inset-0 w-full h-full object-cover" />
               <img src={imageB} alt="Outer B" className="outer-imgB absolute inset-0 w-full h-full object-cover" />
@@ -188,8 +189,9 @@ export default function Layer1() {
       </div>
 
       {/* RIGHT SIDE: Osmo Pill Container */}
-      <div className="w-full lg:w-[55%] flex items-center justify-center lg:justify-start shrink-0 h-[100dvh] lg:h-auto pb-24 pt-8 lg:pb-0 lg:pt-0">
-        <div className="relative w-full max-w-[420px] md:max-w-[600px] lg:max-w-[665px] h-[550px] md:h-[600px] lg:h-[665px] bg-[#201D1D] rounded-[3rem] lg:rounded-full flex flex-col justify-center lg:justify-between items-center py-8 lg:py-5 px-4 lg:px-15 shadow-2xl overflow-hidden">
+      <div className="w-full lg:w-[55%] flex items-center justify-center lg:justify-start shrink-0 min-h-[60dvh] lg:min-h-0 lg:h-auto pb-16 lg:pb-0">
+        {/* Adjusted md:w-[85%] based on your tablet design preference */}
+        <div className="relative w-full max-w-[420px] md:w-[85%] md:max-w-none lg:w-full lg:max-w-[800px] h-[500px] md:h-[500px] lg:h-[665px] bg-[#201D1D] rounded-[3rem] lg:rounded-full flex flex-col justify-center lg:justify-between items-center py-6 lg:py-5 px-4 lg:px-15 shadow-2xl overflow-hidden mx-auto lg:mx-0">
           
           <div className="hidden lg:block text-center mt-4 z-10 -space-y-1">
             <h3 className="text-[#9DFE51] font-haffer-regular font-medium text-lg tracking-wide">Latest updates</h3>
@@ -210,20 +212,18 @@ export default function Layer1() {
               </div>
             </div>
 
-            {/* Redesigned Card Container: my-auto vertically centers absolute children without overwriting GSAP's yPercent translations */}
-            <div ref={cardsContainerRef} className="relative w-[95%] lg:w-full h-[400px] lg:h-[220px] pointer-events-none z-20 mt-4 lg:mt-0" style={{ transformStyle: 'preserve-3d' }}>
+            <div ref={cardsContainerRef} className="relative w-[95%] lg:w-full h-full lg:h-[220px] pointer-events-none z-20 mt-0" style={{ transformStyle: 'preserve-3d' }}>
               {rightCards.map((card, idx) => (
-                <div key={card.id} className={`absolute inset-x-0 top-0 bottom-0 my-auto w-full bg-[#9DFE51] rounded-[2rem] lg:rounded-2xl p-3 lg:px-4 lg:py-2 flex flex-col lg:flex-row gap-2 lg:gap-3 items-stretch shadow-xl pointer-events-auto ${idx === 0 ? 'flex' : 'hidden'} h-fit lg:h-full`} style={{ backfaceVisibility: 'hidden' }}>
+                // FIX: Replaced translation matrix classes (-translate-y-1/2) with top-0 bottom-0 my-auto to prevent GSAP conflicts
+                <div key={card.id} className={`absolute inset-x-0 top-0 bottom-0 my-auto lg:inset-0 lg:my-0 w-full bg-[#9DFE51] rounded-3xl lg:rounded-2xl p-4 lg:px-4 lg:py-2 flex flex-col lg:flex-row gap-4 lg:gap-3 items-stretch shadow-xl pointer-events-auto ${idx === 0 ? 'flex' : 'hidden'} h-fit lg:h-full`} style={{ backfaceVisibility: 'hidden' }}>
                   
-                  {/* Title Box */}
-                  <div className="w-full lg:w-[45%] flex flex-col justify-center py-5 md:py-6 lg:py-0 px-2 md:px-4 lg:px-2">              
-                    <h4 className="text-[#111] text-[28px] md:text-3xl font-haffer-regular font-medium leading-[1.1] tracking-tight text-center lg:text-left">{card.title}</h4>
+                  <div className="w-full lg:w-[45%] flex flex-col justify-center py-2 lg:py-0 px-2 lg:px-2">              
+                    <h4 className="text-[#111] text-[26px] md:text-3xl font-haffer-regular font-medium leading-[1.1] tracking-tight text-center lg:text-left">{card.title}</h4>
                   </div>
 
-                  {/* Dark Text Box: Becomes a natural child of the green box, automatically expanding the parent height */}
-                  <div className="w-full lg:flex-grow bg-[#1A1F2B] lg:bg-gray-800 rounded-[1.25rem] lg:rounded-xl p-5 md:p-6 lg:p-6 flex flex-col justify-center shadow-2xl lg:shadow-inner border border-white/5 lg:border-none">
+                  <div className="w-full lg:flex-grow bg-[#1A1F2B] lg:bg-gray-800 rounded-2xl lg:rounded-xl p-5 lg:p-6 flex flex-col justify-center shadow-2xl lg:shadow-inner border border-white/5 lg:border-none">
                     <h5 className="text-white/50 text-[11px] lg:text-xs mb-3 lg:mb-4 tracking-widest uppercase shrink-0">{card.label}</h5>
-                    <p className="font-display text-[15px] md:text-[16px] lg:text-[17px] leading-relaxed lg:leading-snug tracking-tight text-[#f4f4f4]">
+                    <p className="font-display text-[14px] md:text-[16px] lg:text-[17px] leading-relaxed lg:leading-snug tracking-tight text-[#f4f4f4]">
                       {card.text.split(' ').map((word, i) => (
                         <span key={i} className="inline-block overflow-hidden mr-1">
                           <span className="about-word-span inline-block transform translate-y-0">{word}</span>
