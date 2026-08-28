@@ -47,8 +47,8 @@ export default function About() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top", 
-          // Drastically shortened the scroll distance for stacked devices for a snappy transition
-          end: isStacked ? "+=250%" : "+=450%", 
+          // Shorter, snappier end point for mobile
+          end: isStacked ? "+=200%" : "+=450%", 
           pin: true,        
           scrub: 1,         
           anticipatePin: 1
@@ -56,13 +56,15 @@ export default function About() {
       });
 
       if (isStacked) {
-         // Elevate the entire wrapper by one viewport height rapidly
+         // Dynamically calculates the exact overflow amount to slide up perfectly
          tl.to('.layer1-scroll-wrapper', { 
-           y: () => -window.innerHeight, 
+           y: () => {
+             const wrapper = document.querySelector('.layer1-scroll-wrapper') as HTMLElement;
+             return wrapper ? -(wrapper.offsetHeight - window.innerHeight) : 0;
+           }, 
            duration: 1.5, 
            ease: "power2.inOut" 
          });
-         // A much shorter pause before the wipe starts
          tl.to({}, { duration: 0.2 });
       }
 
