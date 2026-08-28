@@ -145,7 +145,6 @@ export default function Layer1() {
       
       {/* LEFT SIDE: Purple Interactive Container */}
       <div className="w-full lg:w-[45%] flex items-center justify-center lg:justify-end shrink-0 min-h-[60dvh] lg:min-h-0 lg:h-auto pt-24 lg:pt-0">
-        {/* Adjusted md:w-[85%] based on your tablet design preference */}
         <div 
           ref={purpleBoxRef} 
           className="relative w-full max-w-[420px] md:w-[85%] md:max-w-none lg:w-full lg:max-w-[600px] h-[360px] md:h-[450px] lg:h-[665px] bg-[#5e43f3] rounded-[2.5rem] lg:rounded-3xl overflow-hidden flex flex-col items-center justify-center shadow-2xl mx-auto lg:mx-0"
@@ -190,37 +189,40 @@ export default function Layer1() {
 
       {/* RIGHT SIDE: Osmo Pill Container */}
       <div className="w-full lg:w-[55%] flex items-center justify-center lg:justify-start shrink-0 min-h-[60dvh] lg:min-h-0 lg:h-auto pb-16 lg:pb-0">
-        {/* Adjusted md:w-[85%] based on your tablet design preference */}
-        <div className="relative w-full max-w-[420px] md:w-[85%] md:max-w-none lg:w-full lg:max-w-[800px] h-[500px] md:h-[500px] lg:h-[665px] bg-[#201D1D] rounded-[3rem] lg:rounded-full flex flex-col justify-center lg:justify-between items-center py-6 lg:py-5 px-4 lg:px-15 shadow-2xl overflow-hidden mx-auto lg:mx-0">
+        {/* Changed from rigid heights to min-h to let the container expand beautifully if the inner content requires it */}
+        <div className="relative w-full max-w-[420px] md:w-[85%] md:max-w-none lg:w-full lg:max-w-[800px] min-h-[500px] md:min-h-[500px] lg:min-h-[665px] h-auto bg-[#201D1D] rounded-[3rem] lg:rounded-full flex flex-col justify-center lg:justify-between items-center py-8 lg:py-5 px-4 lg:px-15 shadow-2xl mx-auto lg:mx-0 overflow-hidden">
           
           <div className="hidden lg:block text-center mt-4 z-10 -space-y-1">
             <h3 className="text-[#9DFE51] font-haffer-regular font-medium text-lg tracking-wide">Latest updates</h3>
             <h3 className="text-[#f4f4f4] font-haffer-light tracking-wide opacity-90">from Osmo</h3>
           </div>
           
-          <div className="relative w-full max-w-[665px] flex-grow flex items-center justify-center" style={{ perspective: '1200px' }}>
+          {/* Changed items-center to items-stretch to let the grid dictate the height securely */}
+          <div className="relative w-full max-w-[665px] flex-grow flex items-stretch justify-center" style={{ perspective: '1200px' }}>
             
-            <div className="absolute top-0 left-0 w-full h-auto lg:h-[40%] z-30 cursor-pointer-custom group flex justify-center items-start pt-2 lg:pt-10" onClick={() => handleCardTransition('up')}>
+            <div className="absolute top-0 left-0 w-full h-[40%] z-30 cursor-pointer-custom group flex justify-center items-start pt-2 lg:pt-10 pointer-events-auto" onClick={() => handleCardTransition('up')}>
               <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-transparent lg:bg-white text-white/50 lg:text-black border border-white/20 lg:border-none rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 lg:translate-y-4 lg:group-hover:translate-y-0 shadow-none lg:shadow-lg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-6 lg:h-6"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
               </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full h-auto lg:h-[40%] z-30 cursor-pointer-custom group flex justify-center items-end pb-2 lg:pb-10" onClick={() => handleCardTransition('down')}>
+            <div className="absolute bottom-0 left-0 w-full h-[40%] z-30 cursor-pointer-custom group flex justify-center items-end pb-2 lg:pb-10 pointer-events-auto" onClick={() => handleCardTransition('down')}>
               <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-transparent lg:bg-white text-white/50 lg:text-black border border-white/20 lg:border-none rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 lg:-translate-y-4 lg:group-hover:translate-y-0 shadow-none lg:shadow-lg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-6 lg:h-6"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
               </div>
             </div>
 
-            <div ref={cardsContainerRef} className="relative w-[95%] lg:w-full h-full lg:h-[220px] pointer-events-none z-20 mt-0" style={{ transformStyle: 'preserve-3d' }}>
+            {/* Changed from absolute layout to CSS Grid layout to enable flawless shrink-wrapping */}
+            <div ref={cardsContainerRef} className="grid w-[95%] lg:w-full pointer-events-none z-20 place-items-center" style={{ transformStyle: 'preserve-3d' }}>
               {rightCards.map((card, idx) => (
-                // FIX: Replaced translation matrix classes (-translate-y-1/2) with top-0 bottom-0 my-auto to prevent GSAP conflicts
-                <div key={card.id} className={`absolute inset-x-0 top-0 bottom-0 my-auto lg:inset-0 lg:my-0 w-full bg-[#9DFE51] rounded-3xl lg:rounded-2xl p-4 lg:px-4 lg:py-2 flex flex-col lg:flex-row gap-4 lg:gap-3 items-stretch shadow-xl pointer-events-auto ${idx === 0 ? 'flex' : 'hidden'} h-fit lg:h-full`} style={{ backfaceVisibility: 'hidden' }}>
+                // [grid-area:1/1] stacks them, while h-fit allows the container to dynamically scale up based on text
+                <div key={card.id} className={`[grid-area:1/1] w-full bg-[#9DFE51] rounded-3xl lg:rounded-2xl p-4 lg:px-4 lg:py-2 flex flex-col lg:flex-row gap-4 lg:gap-3 items-stretch shadow-xl pointer-events-auto ${idx === 0 ? 'flex' : 'hidden'} h-fit lg:h-auto`} style={{ backfaceVisibility: 'hidden' }}>
                   
                   <div className="w-full lg:w-[45%] flex flex-col justify-center py-2 lg:py-0 px-2 lg:px-2">              
                     <h4 className="text-[#111] text-[26px] md:text-3xl font-haffer-regular font-medium leading-[1.1] tracking-tight text-center lg:text-left">{card.title}</h4>
                   </div>
 
+                  {/* flex-grow ensures the dark box cleanly expands as text requires it */}
                   <div className="w-full lg:flex-grow bg-[#1A1F2B] lg:bg-gray-800 rounded-2xl lg:rounded-xl p-5 lg:p-6 flex flex-col justify-center shadow-2xl lg:shadow-inner border border-white/5 lg:border-none">
                     <h5 className="text-white/50 text-[11px] lg:text-xs mb-3 lg:mb-4 tracking-widest uppercase shrink-0">{card.label}</h5>
                     <p className="font-display text-[14px] md:text-[16px] lg:text-[17px] leading-relaxed lg:leading-snug tracking-tight text-[#f4f4f4]">
