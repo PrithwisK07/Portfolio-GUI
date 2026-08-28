@@ -23,7 +23,7 @@ export default function Hero() {
       const { isDesktop } = context.conditions as { isDesktop: boolean, isMobile: boolean };
 
       if (isDesktop) {
-        // DESKTOP LOGIC: Horizontal Scrubbing 
+        // DESKTOP & TABLET LOGIC: Horizontal Scrubbing
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -46,7 +46,7 @@ export default function Hero() {
         tl.to(step3Ref.current, { x: () => getOffset(step3Ref.current), ease: "none" }, 0);
         
       } else {
-        // MOBILE LOGIC: Vertical Slide-Up Reveal with a "Hold" at the end
+        // MOBILE LOGIC: Vertical Slide-Up Reveal
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -165,8 +165,8 @@ export default function Hero() {
 
         {/* --- THE THREE STAGGERED WHITE STEPS --- */}
         
-        {/* Step 1: Fixed Nav overlap. Now items-end on mobile, items-center on desktop */}
-        <div ref={step1Ref} className="hero-step absolute top-0 right-0 w-full md:w-[50vw] lg:w-[45vw] h-[30vh] bg-[#f4f4f5] z-[10] flex items-end md:items-center justify-start p-6 pb-8 md:p-8 lg:p-12 pt-28 md:pt-8">
+        {/* Step 1: Expanded md width to give text breathing room on tablet */}
+        <div ref={step1Ref} className="hero-step absolute top-0 right-0 w-full md:w-[65vw] lg:w-[45vw] h-[30vh] bg-[#f4f4f5] z-[10] flex items-end md:items-center justify-start p-6 pb-8 md:p-8 lg:p-12 pt-28 md:pt-8">
             <div className="reveal-text-wrapper max-w-sm">
                 <p className="reveal-text text-lg md:text-lg font-haffer-regular text-gray-700 font-medium leading-relaxed">
                     I craft immersive digital experiences at the intersection of design, technology and human emotion.
@@ -174,20 +174,21 @@ export default function Hero() {
             </div>
         </div>
 
-        {/* Step 2: Unchanged */}
-        <div ref={step2Ref} className="hero-step absolute top-[30vh] right-0 w-full md:w-[70vw] lg:w-[65vw] h-[40vh] bg-[#f4f4f5] z-[10] p-6 md:p-8 lg:p-12 flex flex-col justify-center">
-            <div className="relative w-full md:w-fit md:ml-16 lg:ml-24">
+        {/* Step 2: Expanded md width. Changed md font scale to vw to prevent clipping. Anchored Hey! text safely. */}
+        <div ref={step2Ref} className="hero-step absolute top-[30vh] right-0 w-full md:w-[85vw] lg:w-[65vw] h-[40vh] bg-[#f4f4f5] z-[10] p-6 md:p-8 lg:p-12 flex flex-col justify-center">
+            <div className="relative w-full md:w-fit md:ml-10 lg:ml-24">
               
-              <h1 className="font-display text-[25vw] md:text-[16vh] leading-[0.8] tracking-tighter font-medium text-[#1a1a1a]">
+              <h1 className="font-display text-[22vw] md:text-[14vw] lg:text-[16vh] leading-[0.8] tracking-tighter font-medium text-[#1a1a1a]">
                   <div className="reveal-text-wrapper"><span className="reveal-text">Design<span className="text-[#5B50FF]">.</span></span></div><br/>
                   <div className="reveal-text-wrapper"><span className="reveal-text">Code<span className="text-[#9DFF3B]">.</span></span></div>
               </h1>
 
-              <div className="absolute -top-12 right-2 md:-top-10 md:-right-48 lg:-right-66 z-20">
+              {/* Tucked the md:-right parameter inwards to completely solve the off-screen cutoff on tablets */}
+              <div className="absolute -top-12 right-2 md:-top-14 md:-right-8 lg:-top-10 lg:-right-66 z-20">
                 <div className="reveal-text-wrapper overflow-visible">
                   <div className="reveal-text flex flex-col items-center">
-                    <span className="font-brisa text-[#5B50FF] text-2xl md:text-4xl lg:text-5xl tracking-wide whitespace-nowrap">Hey! I'm Prithwis</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 32" fill="none" className="w-5 h-5 md:w-8 md:h-8 text-[#5B50FF] ml-4 md:ml-10 rotate-[-90deg] scale-y-180">
+                    <span className="font-brisa text-[#5B50FF] text-2xl md:text-3xl lg:text-5xl tracking-wide whitespace-nowrap">Hey! I'm Prithwis</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 32" fill="none" className="w-5 h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 text-[#5B50FF] ml-4 md:ml-6 lg:ml-10 rotate-[-90deg] scale-y-180">
                       <path d="M-1.3266e-06 0.812487L1.24998 0.603613L1.62857 -0.000167918C1.45886 1.95803 4.50712 2.87186 5.21207 4.73215C5.42421 5.2935 4.76822 5.38815 4.56913 5.21191C4.52018 5.16948 4.33088 4.48411 3.92945 4.0631C3.5835 3.7041 2.02674 1.96782 1.63183 2.28114C2.1377 7.34635 3.34526 11.9905 5.93334 16.3998C11.2009 25.3846 20.7308 30.3095 30.9689 31.1385C15.8484 31.7782 2.73822 19.0694 1.29894 4.23934C0.443857 4.58202 1.35768 7.3594 -1.04856e-06 7.17337L-1.32646e-06 0.815748L-1.3266e-06 0.812487Z" fill="currentColor"></path>
                     </svg>
                   </div>
@@ -197,9 +198,9 @@ export default function Hero() {
             </div>
         </div>
 
-        {/* Step 3: Fixed Overflow. Adjusted size to 11.5vw and changed mobile alignment to items-center */}
-        <div ref={step3Ref} className="hero-step absolute bottom-0 right-0 w-full md:w-[90vw] lg:w-[85vw] h-[30vh] bg-[#f4f4f5] z-[10] p-6 md:p-8 lg:p-12 flex items-center md:items-end">
-            <h2 className="font-display text-[11.5vw] md:text-[13vw] lg:text-[12.5vw] leading-[0.75] uppercase w-full font-bold text-[#1a1a1a]">
+        {/* Step 3: Expanded md width to 95vw and mapped typography to fluid 10.5vw to fit exactly */}
+        <div ref={step3Ref} className="hero-step absolute bottom-0 right-0 w-full md:w-[95vw] lg:w-[85vw] h-[30vh] bg-[#f4f4f5] z-[10] p-6 md:p-8 lg:p-12 flex items-center md:items-end">
+            <h2 className="font-display text-[11.5vw] md:text-[10.5vw] lg:text-[12.5vw] leading-[0.75] uppercase w-full font-bold text-[#1a1a1a]">
                 <div className="reveal-text-wrapper w-full">
                   <span className="reveal-text flex justify-between w-full">
                     <span>E</span><span>X</span><span>P</span><span>E</span><span>R</span><span>I</span><span>E</span><span>N</span><span>C</span><span>E</span><span className="text-[#FF3B00]">.</span>
