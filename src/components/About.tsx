@@ -47,8 +47,8 @@ export default function About() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top", 
-          // Shorter, snappier end point for mobile
-          end: isStacked ? "+=200%" : "+=450%", 
+          // Extended from +=200% to +=350% so the layer 3 sweep and final bubble travel actually complete
+          end: isStacked ? "+=350%" : "+=450%", 
           pin: true,        
           scrub: 1,         
           anticipatePin: 1
@@ -56,7 +56,6 @@ export default function About() {
       });
 
       if (isStacked) {
-         // Dynamically calculates the exact overflow amount to slide up perfectly
          tl.to('.layer1-scroll-wrapper', { 
            y: () => {
              const wrapper = document.querySelector('.layer1-scroll-wrapper') as HTMLElement;
@@ -75,9 +74,15 @@ export default function About() {
       
       bubblesRef.current.forEach((bubble, idx) => {
         const isLastBubble = idx === bubblesRef.current.length - 1;
-        gsap.set(bubble, { scale: 0.3, xPercent: isLastBubble ? -50 : 0 });
+        
+        // Start mobile bubbles at 0.5 scale so they don't disappear, and ensure all bubbles center on their X-axis
+        gsap.set(bubble, { scale: isStacked ? 0.5 : 0.3, xPercent: -50 });
+        
+        // Stop the final bubble slightly higher (-125vh) on mobile so it centers well
+        const targetY = isLastBubble ? (isStacked ? "-125vh" : "-155vh") : "-250vh";
+
         tl.to(bubble, {
-          y: isLastBubble ? "-155vh" : "-250vh", scale: 1.1, rotation: isLastBubble ? 0 : Math.random() * 30 - 15, duration: 4, ease: "none" 
+          y: targetY, scale: 1.1, rotation: isLastBubble ? 0 : Math.random() * 30 - 15, duration: 4, ease: "none" 
         }, idx === 0 ? "reveal+=1.8" : "-=3.2"); 
       });
       
