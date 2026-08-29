@@ -72,7 +72,8 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
   return (
     <div ref={layer3Ref} className="absolute inset-0 z-[0] bg-gradient-to-b from-[#F8F8F8] to-[#F4F4F3] flex flex-col items-center justify-center overflow-hidden">
       
-      <div className="absolute top-[10%] md:top-[10%] lg:top-[8%] max-w-[90%] md:max-w-3xl lg:max-w-4xl px-4 md:px-6 text-center z-10">
+      {/* Top Typography Header: Increased z-index from 10 to 30 so it sits above the PLAY/REEL wrapper */}
+      <div className="absolute top-[10%] md:top-[10%] lg:top-[8%] max-w-[90%] md:max-w-3xl lg:max-w-4xl px-4 md:px-6 text-center z-30">
         <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-medium tracking-tight leading-snug md:leading-tight lg:leading-[3.25rem] text-[#111]">
           Osmo is an ever-growing platform with Webflow & HTML resources. Get exclusive access to the elements, techniques and code behind award-winning work.
         </h2>
@@ -110,7 +111,6 @@ export default function Layer3({ layer3Ref }: Layer3Props) {
             <div className="absolute bottom-3 right-3 lg:bottom-4 lg:right-4 text-white text-[11px] lg:text-xs tracking-wider z-10 bg-[#201D1D] px-1.5 py-0.5 rounded-sm">00:29</div>
           </div>
           
-          {/* Arrow FIX: flex-row-reverse on mobile shifts the arrow to the right, lg:flex-row resets it to the left. Re-centered horizontally. */}
           <div className="absolute top-full mt-[4vw] left-1/2 -translate-x-1/2 lg:translate-x-0 md:mt-[3vw] lg:top-auto lg:left-auto lg:-bottom-16 lg:right-[-70%] rotate-0 lg:rotate-[-10deg] opacity-80 pointer-events-none flex flex-row-reverse lg:flex-row items-center lg:items-end gap-1.5 lg:gap-2 w-max">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 32" fill="none" className="w-6 h-6 md:w-8 md:h-8 text-[#FF3B00] -mt-3 lg:mt-0 lg:mb-8 [transform:scaleX(-1.5)_scaleY(1.8)] md:[transform:scaleX(-1.8)_scaleY(2)] lg:[transform:scaleX(1.8)_scaleY(1.8)] rotate-[-15deg] lg:rotate-15">
               <path d="M-1.3266e-06 0.812487L1.24998 0.603613L1.62857 -0.000167918C1.45886 1.95803 4.50712 2.87186 5.21207 4.73215C5.42421 5.2935 4.76822 5.38815 4.56913 5.21191C4.52018 5.16948 4.33088 4.48411 3.92945 4.0631C3.5835 3.7041 2.02674 1.96782 1.63183 2.28114C2.1377 7.34635 3.34526 11.9905 5.93334 16.3998C11.2009 25.3846 20.7308 30.3095 30.9689 31.1385C15.8484 31.7782 2.73822 19.0694 1.29894 4.23934C0.443857 4.58202 1.35768 7.3594 -1.04856e-06 7.17337L-1.32646e-06 0.815748L-1.3266e-06 0.812487Z" fill="currentColor"></path>
