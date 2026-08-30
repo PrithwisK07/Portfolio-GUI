@@ -122,7 +122,6 @@ export default function Projects() {
   };
 
   const handleProjectEnter = (e: React.MouseEvent, project: Project, indexStr: string) => {
-    // DISABLE ON TOUCH DEVICES
     if (window.matchMedia("(hover: none)").matches) return;
     if (isModalOpen.current) return;
 
@@ -221,27 +220,25 @@ export default function Projects() {
 
     if (hoverImageRef.current) {
       if (isTouch) {
-        // MOBILE: Slide up like a native app drawer
         gsap.set(hoverImageRef.current, {
           opacity: 1,
           backgroundColor: project.color,
           left: "50vw",
-          top: "150vh", // Start below the screen
+          top: "150vh",
           width: "100vw",
           height: "100vh",
-          borderRadius: "2rem 2rem 0 0", // Rounded top corners
+          borderRadius: "2rem 2rem 0 0",
           scaleY: 1, scaleX: 1, rotationX: 0, rotationY: 0, rotationZ: 0
         });
 
         gsap.to(hoverImageRef.current, {
-          top: "50vh", // Centers it since transform is -50% -50%
-          borderRadius: "0", // Snap to full rectangle
+          top: "50vh",
+          borderRadius: "0",
           duration: 0.8,
           ease: "power4.inOut",
           zIndex: 90,
         });
       } else {
-        // DESKTOP: Expand from mouse cursor
         gsap.set(hoverImageRef.current, {
           opacity: 1,
           backgroundColor: project.color
@@ -319,7 +316,6 @@ export default function Projects() {
     const isTouch = window.matchMedia("(hover: none)").matches;
 
     gsap.to(hoverImageRef.current, {
-      // MOBILE: slide back down. DESKTOP: Shrink back to card size
       top: isTouch ? "150vh" : hoverImageRef.current?.style.top,
       width: isTouch ? "100vw" : "300px",
       height: isTouch ? "100vh" : "400px",
@@ -350,15 +346,16 @@ export default function Projects() {
 
   return (
     <>
-      <section id="work" className="py-24 md:py-32 bg-[#201D1D]">
-        <div className="px-6 md:px-12 mb-10 md:mb-16">
-          <h2 className="font-display text-4xl md:text-8xl tracking-tighter text-white">
+      {/* FIX: Removed bottom padding on mobile/tablet so the last row hits the absolute bottom cleanly */}
+      <section id="work" className="min-h-[100dvh] flex flex-col justify-start pt-24 pb-0 lg:py-32 bg-[#201D1D] relative z-10">
+        <div className="px-6 md:px-12 mb-8 md:mb-10 lg:mb-16 shrink-0">
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white">
             Selected Works
           </h2>
         </div>
 
         <div
-          className="w-full flex flex-col border-t border-white/10"
+          className="w-full flex-1 flex flex-col border-t border-white/10"
           onMouseLeave={() => {
             handleProjectLeave();
           }}
@@ -387,12 +384,11 @@ export default function Projects() {
       >
         {hoveredData && (
           <>
-            <div className="absolute w-1/2 top-6 left-6 text-white font-brisa text-4xl md:text-7xl z-20 pointer-events-none hidden md:block">
+            <div className="absolute w-[80%] top-6 left-6 md:top-10 md:left-10 text-white font-brisa text-3xl md:text-5xl lg:text-7xl z-20 pointer-events-none block">
               {hoveredData.project.title}
             </div>
             
-            {/* The giant background numbers */}
-            <div className="absolute -bottom-8 -right-4 text-white/20 font-palma-heavy text-[12rem] font-bold z-0 leading-none pointer-events-none flex h-[1em] overflow-hidden hidden md:flex">
+            <div className="absolute -bottom-4 -right-2 md:-bottom-8 md:-right-4 text-white/20 font-palma-heavy text-[8rem] md:text-[10rem] lg:text-[12rem] font-bold z-0 leading-none pointer-events-none flex h-[1em] overflow-hidden">
               {hoveredData.indexStr.split('').map((char, i) => {
                 const dummy1 = (parseInt(char) + 3) % 10;
                 const dummy2 = (parseInt(char) + 7) % 10;
