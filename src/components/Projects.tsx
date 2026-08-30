@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-
 import { projectsData } from "./sub-components/Projects/projectsData";
 import { Project } from "./sub-components/Projects/types";
 import ProjectItem from "./sub-components/Projects/ProjectItem";
@@ -12,10 +11,9 @@ export default function Projects() {
   const hoverImageRef = useRef<HTMLDivElement>(null);
   const projectModalRef = useRef<HTMLDivElement>(null);
   const modalScrollCtx = useRef<gsap.Context | null>(null);
-
   const isModalOpen = useRef(false);
   const isHoveringProject = useRef(false);
-  const anchorPos = useRef({ x: 0, y: 0 }); 
+  const anchorPos = useRef({ x: 0, y: 0 });
 
   const [activeProject, setActiveProject] = useState<Project>(projectsData[0]);
   const [hoveredData, setHoveredData] = useState<{ project: Project; indexStr: string } | null>(null);
@@ -26,32 +24,29 @@ export default function Projects() {
       gsap.set(hoverImageRef.current, {
         xPercent: -50,
         yPercent: -50,
-        transformOrigin: "50% 0%", 
+        transformOrigin: "50% 0%",
       });
     }
   }, []);
 
-  // Hover Card Slot Animation
   useEffect(() => {
     if (hoveredData) {
       gsap.fromTo(
         ".hover-card-slot",
         { y: "0em" },
-        { 
-          y: "-2em", 
-          duration: 0.7, 
-          ease: "power3.out", 
-          stagger: 0.1, 
-          overwrite: "auto" 
+        {
+          y: "-2em",
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.1,
+          overwrite: "auto"
         }
       );
     }
   }, [hoveredData]);
 
-  // MODAL SCROLL ANIMATIONS
   const initModalScrollAnimations = () => {
     modalScrollCtx.current = gsap.context(() => {
-      // Text reveals
       gsap.utils.toArray(".modal-text-reveal").forEach((el: any) => {
         gsap.fromTo(
           el,
@@ -70,7 +65,6 @@ export default function Projects() {
         );
       });
 
-      // Image parallax
       gsap.utils.toArray(".modal-parallax").forEach((el: any) => {
         gsap.to(el, {
           yPercent: 15,
@@ -85,7 +79,6 @@ export default function Projects() {
         });
       });
 
-      // Stats counting animation
       gsap.utils.toArray(".stat-container").forEach((container: any) => {
         const valEl = container.querySelector(".stat-val");
         const targetVal = parseFloat(valEl.dataset.val);
@@ -129,9 +122,11 @@ export default function Projects() {
   };
 
   const handleProjectEnter = (e: React.MouseEvent, project: Project, indexStr: string) => {
+    // DISABLE ON TOUCH DEVICES
+    if (window.matchMedia("(hover: none)").matches) return;
     if (isModalOpen.current) return;
+
     isHoveringProject.current = true;
-    
     setHoveredData({ project, indexStr });
 
     if (hoverImageRef.current) {
@@ -139,20 +134,17 @@ export default function Projects() {
       anchorPos.current = { x: e.clientX, y: e.clientY };
 
       if (currentOpacity < 0.05) {
-        gsap.set(hoverImageRef.current, { 
-          left: anchorPos.current.x, 
+        gsap.set(hoverImageRef.current, {
+          left: anchorPos.current.x,
           top: anchorPos.current.y,
-          scaleY: 1.5, 
+          scaleY: 1.5,
           scaleX: 1,
           rotationX: 0,
           rotationY: 0,
           rotationZ: 0
         });
       } else {
-        gsap.set(hoverImageRef.current, { 
-          scaleY: 1.15, 
-          scaleX: 1 
-        });
+        gsap.set(hoverImageRef.current, { scaleY: 1.15, scaleX: 1 });
       }
 
       gsap.to(hoverImageRef.current, {
@@ -160,21 +152,23 @@ export default function Projects() {
         scaleY: 1,
         scaleX: 1,
         backgroundColor: project.color,
-        duration: 0.7, 
-        ease: "power3.out", 
+        duration: 0.7,
+        ease: "power3.out",
         overwrite: "auto",
       });
     }
   };
 
   const handleProjectLeave = () => {
+    if (window.matchMedia("(hover: none)").matches) return;
     if (isModalOpen.current) return;
+    
     isHoveringProject.current = false;
-
+    
     if (hoverImageRef.current) {
       gsap.to(hoverImageRef.current, {
         opacity: 0,
-        scaleY: 1.1, 
+        scaleY: 1.1,
         scaleX: 1,
         rotationX: 0,
         rotationY: 0,
@@ -187,9 +181,9 @@ export default function Projects() {
   };
 
   const handleProjectMove = (e: React.MouseEvent, project: Project, indexStr: string, rect: DOMRect) => {
+    if (window.matchMedia("(hover: none)").matches) return;
     if (isModalOpen.current) return;
 
-    // FIX: Catch edge cases where the mouse is over the row, but onEnter was missed (e.g., right after a modal closes)
     if (!isHoveringProject.current) {
       handleProjectEnter(e, project, indexStr);
     }
@@ -198,11 +192,10 @@ export default function Projects() {
       const dampening = 0.15;
       const deltaX = e.clientX - anchorPos.current.x;
       const deltaY = e.clientY - anchorPos.current.y;
-
       const targetX = anchorPos.current.x + deltaX * dampening;
       const targetY = anchorPos.current.y + deltaY * dampening;
 
-      const maxTilt = 20; 
+      const maxTilt = 20;
       const rotY = gsap.utils.clamp(-maxTilt, maxTilt, deltaX * 0.08);
 
       gsap.to(hoverImageRef.current, {
@@ -222,38 +215,60 @@ export default function Projects() {
     if (isModalOpen.current) return;
     isModalOpen.current = true;
     setActiveProject(project);
-
-    // FIX: Force data configuration and background color instantly just in case the hover card was totally invisible
     setHoveredData({ project, indexStr });
+
+    const isTouch = window.matchMedia("(hover: none)").matches;
+
     if (hoverImageRef.current) {
-      gsap.set(hoverImageRef.current, {
-        opacity: 1,
-        backgroundColor: project.color
-      });
+      if (isTouch) {
+        // MOBILE: Slide up like a native app drawer
+        gsap.set(hoverImageRef.current, {
+          opacity: 1,
+          backgroundColor: project.color,
+          left: "50vw",
+          top: "150vh", // Start below the screen
+          width: "100vw",
+          height: "100vh",
+          borderRadius: "2rem 2rem 0 0", // Rounded top corners
+          scaleY: 1, scaleX: 1, rotationX: 0, rotationY: 0, rotationZ: 0
+        });
+
+        gsap.to(hoverImageRef.current, {
+          top: "50vh", // Centers it since transform is -50% -50%
+          borderRadius: "0", // Snap to full rectangle
+          duration: 0.8,
+          ease: "power4.inOut",
+          zIndex: 90,
+        });
+      } else {
+        // DESKTOP: Expand from mouse cursor
+        gsap.set(hoverImageRef.current, {
+          opacity: 1,
+          backgroundColor: project.color
+        });
+        gsap.to(hoverImageRef.current, {
+          left: "50vw",
+          top: "50vh",
+          width: "100vw",
+          height: "100vh",
+          borderRadius: "0",
+          scaleY: 1,
+          scaleX: 1,
+          rotationX: 0,
+          rotationY: 0,
+          rotationZ: 0,
+          duration: 0.8,
+          ease: "power4.inOut",
+          zIndex: 90,
+        });
+      }
     }
 
     if ((window as any).lenis) (window as any).lenis.stop();
     document.body.style.overflow = "hidden";
 
-    gsap.to(hoverImageRef.current, {
-      left: "50vw",
-      top: "50vh",
-      width: "100vw",
-      height: "100vh",
-      borderRadius: "0",
-      scaleY: 1, 
-      scaleX: 1,
-      rotationX: 0,
-      rotationY: 0,
-      rotationZ: 0,
-      duration: 0.8,
-      ease: "power4.inOut",
-      zIndex: 90,
-    });
-
     gsap.to("#main-nav", { opacity: 0, duration: 0.3, pointerEvents: "none" });
     gsap.to("#main-nav", { display: "none", delay: 0.3});
-
     gsap.to("#main-logo", { opacity: 0, duration: 0.3, pointerEvents: "none" });
     gsap.to("#main-logo", { display: "none", delay: 0.3});
 
@@ -301,10 +316,14 @@ export default function Projects() {
       },
     });
 
+    const isTouch = window.matchMedia("(hover: none)").matches;
+
     gsap.to(hoverImageRef.current, {
-      width: "300px",
-      height: "400px",
-      borderRadius: "8px",
+      // MOBILE: slide back down. DESKTOP: Shrink back to card size
+      top: isTouch ? "150vh" : hoverImageRef.current?.style.top,
+      width: isTouch ? "100vw" : "300px",
+      height: isTouch ? "100vh" : "400px",
+      borderRadius: isTouch ? "2rem 2rem 0 0" : "8px",
       opacity: 0,
       scaleY: 1.1,
       scaleX: 1,
@@ -317,14 +336,12 @@ export default function Projects() {
       onComplete: () => {
         isModalOpen.current = false;
         isHoveringProject.current = false;
-
         if ((window as any).lenis) (window as any).lenis.start();
         document.body.style.overflow = "";
-
         gsap.set(hoverImageRef.current, { zIndex: 10 });
+
         gsap.to("#main-nav", { opacity: 1, duration: 0.3});
         gsap.to("#main-nav", { display: "flex", delay: 0.3});
-
         gsap.to("#main-logo", { opacity: 1, delay: 0.3});
         gsap.to("#main-logo", { display: "flex", delay: 0.3});
       },
@@ -333,9 +350,9 @@ export default function Projects() {
 
   return (
     <>
-      <section id="work" className="py-32 bg-[#201D1D]">
-        <div className="px-6 md:px-12 mb-16">
-          <h2 className="font-display text-6xl md:text-8xl tracking-tighter">
+      <section id="work" className="py-24 md:py-32 bg-[#201D1D]">
+        <div className="px-6 md:px-12 mb-10 md:mb-16">
+          <h2 className="font-display text-4xl md:text-8xl tracking-tighter text-white">
             Selected Works
           </h2>
         </div>
@@ -347,7 +364,7 @@ export default function Projects() {
           }}
         >
           {projectsData.map((project, idx) => {
-            const indexStr = String(idx + 1).padStart(2, "0"); 
+            const indexStr = String(idx + 1).padStart(2, "0");
             return (
               <ProjectItem
                 key={project.id}
@@ -370,16 +387,17 @@ export default function Projects() {
       >
         {hoveredData && (
           <>
-            <div className="absolute w-1/2 top-6 left-6 text-white font-brisa text-3xl md:text-7xl z-20 pointer-events-none">
+            <div className="absolute w-1/2 top-6 left-6 text-white font-brisa text-4xl md:text-7xl z-20 pointer-events-none hidden md:block">
               {hoveredData.project.title}
             </div>
             
-            <div className="absolute -bottom-8 -right-4 text-white/20 font-palma-heavy text-[12rem] font-bold z-0 leading-none pointer-events-none flex h-[1em] overflow-hidden">
+            {/* The giant background numbers */}
+            <div className="absolute -bottom-8 -right-4 text-white/20 font-palma-heavy text-[12rem] font-bold z-0 leading-none pointer-events-none flex h-[1em] overflow-hidden hidden md:flex">
               {hoveredData.indexStr.split('').map((char, i) => {
                 const dummy1 = (parseInt(char) + 3) % 10;
                 const dummy2 = (parseInt(char) + 7) % 10;
                 return (
-                  <span 
+                  <span
                     key={`${hoveredData.project.id}-${i}`}
                     className="hover-card-slot flex flex-col -translate-y-[2em]"
                   >
