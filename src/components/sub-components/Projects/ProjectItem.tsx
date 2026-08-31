@@ -14,7 +14,8 @@ interface ProjectItemProps {
 export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMove, onClick }: ProjectItemProps) {
   return (
     <div
-      className="project-item group w-full py-8 md:py-12 px-4 md:px-12 flex justify-between items-center cursor-pointer-custom relative overflow-hidden active:bg-white/5 md:active:bg-transparent transition-colors"
+      // FIX: Changed 'md:flex-none' to 'lg:flex-none' so tablet AND mobile both dynamically stretch to fill the height
+      className="project-item group w-full flex-1 lg:flex-none py-6 md:py-8 lg:py-12 px-4 md:px-8 lg:px-12 flex justify-between items-center cursor-pointer-custom relative overflow-hidden active:bg-white/5 lg:active:bg-transparent transition-colors"
       onMouseEnter={(e) => {
         onEnter(e, project, indexStr);
       }}
@@ -24,20 +25,17 @@ export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMov
       onMouseMove={(e) => onMove(e, project, indexStr, e.currentTarget.getBoundingClientRect())}
       onClick={() => onClick(project, indexStr)}
     >
-      {/* SHUTTER BACKGROUND (Desktop only via md:group-hover) */}
-      <div className="absolute bottom-0 left-0 w-full h-0 bg-white transition-all duration-700 ease-out hidden md:block md:group-hover:h-full z-0" />
+      <div className="absolute bottom-0 left-0 w-full h-0 bg-white transition-all duration-700 ease-out hidden lg:block lg:group-hover:h-full z-0" />
       
-      {/* LEFT CONTENT */}
-      <div className="flex items-center gap-3 md:gap-6 transition-transform duration-700 ease-out md:group-hover:translate-x-20 relative z-10">
+      <div className="flex items-center gap-4 md:gap-6 transition-transform duration-700 ease-out lg:group-hover:translate-x-20 relative z-10">
         
-        {/* SLOT MACHINE INDEX */}
-        <span className="font-palma-heavy text-2xl md:text-6xl inline-flex h-[1em] overflow-hidden leading-none relative z-10 tracking-tighter">
+        <span className="font-palma-heavy text-3xl md:text-5xl lg:text-6xl inline-flex h-[1em] overflow-hidden leading-none relative z-10 tracking-tighter">
           {indexStr.split('').map((char, i) => {
             const dummy = (parseInt(char) + 5) % 10;
             return (
               <span
                 key={i}
-                className="flex flex-col transition-transform duration-700 ease-out md:group-hover:-translate-y-[2em]"
+                className="flex flex-col transition-transform duration-700 ease-out lg:group-hover:-translate-y-[2em]"
                 style={{ transitionDelay: `${i * 75}ms` }}
               >
                 <span className="h-[1em] flex items-center text-white">{char}</span>
@@ -48,31 +46,23 @@ export default function ProjectItem({ project, indexStr, onEnter, onLeave, onMov
           })}
         </span>
         
-        {/* ARROW: Always visible on mobile, hover-only on desktop */}
-        <span className="opacity-100 translate-x-0 md:opacity-0 md:-translate-x-10 md:group-hover:opacity-100 md:group-hover:translate-x-0 font-display text-xl md:text-4xl text-red-600 transition-all duration-700 ease-out">
+        <span className="hidden lg:inline-block lg:opacity-0 lg:-translate-x-10 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 font-display text-4xl text-red-600 transition-all duration-700 ease-out">
           →
         </span>
         
-        {/* TITLE */}
-        <h3 className="font-display text-2xl md:text-6xl tracking-tight pointer-events-none text-white md:group-hover:text-[#201D1D] transition-colors duration-700 ease-out">
+        <h3 className="font-display text-3xl md:text-5xl lg:text-6xl tracking-tight pointer-events-none text-white lg:group-hover:text-[#201D1D] transition-colors duration-700 ease-out">
           {project.title}
         </h3>
         
       </div>
 
-      {/* RIGHT CONTENT */}
-      <div className="text-right transition-transform duration-700 ease-out md:group-hover:-translate-x-12 pointer-events-none relative z-10 flex flex-col md:block">
-        
-        {/* YEAR */}
-        <span className="block text-[10px] md:text-sm uppercase tracking-widest text-white/50 md:group-hover:text-[#201D1D]/70 transition-colors duration-700 ease-out mb-1 md:mb-0">
+      <div className="text-right transition-transform duration-700 ease-out lg:group-hover:-translate-x-12 pointer-events-none relative z-10 flex flex-col md:block">
+        <span className="block text-[10px] md:text-xs lg:text-sm uppercase tracking-widest text-white/50 lg:group-hover:text-[#201D1D]/70 transition-colors duration-700 ease-out mb-1 md:mb-0">
           {project.year}
         </span>
-        
-        {/* CATEGORY */}
-        <span className="block text-xs md:text-base font-medium text-white/80 md:group-hover:text-[#201D1D] transition-colors duration-700 ease-out">
+        <span className="block text-sm md:text-base font-medium text-white/80 lg:group-hover:text-[#201D1D] transition-colors duration-700 ease-out">
           {project.category}
         </span>
-        
       </div>
     </div>
   );
